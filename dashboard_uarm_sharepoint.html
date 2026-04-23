@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Producción Científica UARM</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
+  :root {
+    --bg:#F5F4F0;--surface:#FFFFFF;--surface2:#EEECE6;--text:#1A1916;
+    --text2:#6B6960;--text3:#9E9C93;--accent:#C8401A;--accent2:#E8602E;
+    --green:#2A7A4B;--blue:#1A5C9E;--border:rgba(26,25,22,0.1);--radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  nav{position:sticky;top:0;z-index:100;background:var(--text);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:52px}
+  .nav-brand{display:flex;align-items:center;gap:10px}
+  .nav-logo{width:24px;height:24px;background:var(--accent);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;color:#fff;font-weight:500}
+  .nav-title{color:#fff;font-size:13px;font-weight:500;letter-spacing:.02em}
+  .nav-meta{color:var(--text3);font-size:11px;font-family:'DM Mono',monospace}
+  .nav-tabs{display:flex;gap:2px}
+  .nav-tab{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.5);cursor:pointer;border:none;background:transparent;transition:all .15s}
+  .nav-tab:hover{color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.07)}
+  .nav-tab.active{color:#fff;background:rgba(255,255,255,0.12)}
+  .view{display:none;padding:2rem;max-width:1100px;margin:0 auto}
+  .view.active{display:block}
+  .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:2rem}
+  .kpi{background:var(--surface);border-radius:var(--radius);padding:1.1rem 1.25rem;border:1px solid var(--border)}
+  .kpi-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+  .kpi-value{font-size:28px;font-weight:300;color:var(--text);line-height:1;font-family:'DM Mono',monospace}
+  .kpi-sub{font-size:11px;color:var(--text2);margin-top:5px}
+  .kpi.accent{background:var(--accent);border-color:var(--accent)}
+  .kpi.accent .kpi-label,.kpi.accent .kpi-value,.kpi.accent .kpi-sub{color:#fff}
+  .section-title{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:2rem 0 .75rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+  @media(max-width:700px){.grid-2{grid-template-columns:1fr}}
+  .card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:1.25rem}
+  .card.full{grid-column:1/-1}
+  .card-title{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:1rem}
+  .chart-wrap{position:relative;width:100%}
+  .tbl-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  thead th{text-align:left;padding:6px 10px;font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);background:var(--surface2)}
+  tbody td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text)}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover td{background:var(--bg)}
+  .td-num{font-family:'DM Mono',monospace;font-size:11px;text-align:right}
+  .td-link{color:var(--blue);text-decoration:none}
+  .td-link:hover{text-decoration:underline}
+  .badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;border-radius:999px}
+  .badge-uarm{background:#FDE8E2;color:#8B2C10}
+  .badge-ext{background:var(--surface2);color:var(--text2)}
+  .collab-grid{display:grid;gap:10px}
+  .collab-item{display:grid;grid-template-columns:140px 1fr 120px;align-items:center;gap:10px}
+  .collab-label{font-size:12px;color:var(--text2)}
+  .collab-bar-bg{background:var(--surface2);border-radius:999px;height:8px;overflow:hidden}
+  .collab-bar-fill{height:100%;border-radius:999px}
+  .collab-val{font-size:11px;font-family:'DM Mono',monospace;color:var(--text2);text-align:right}
+  .upload-area{border:2px dashed var(--border);border-radius:var(--radius);padding:2.5rem;text-align:center;cursor:pointer;transition:all .2s;background:var(--surface)}
+  .upload-area:hover,.upload-area.drag{border-color:var(--accent);background:#FFF8F6}
+  .upload-icon{font-size:32px;margin-bottom:.75rem;color:var(--text3)}
+  .upload-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:.25rem}
+  .upload-sub{font-size:12px;color:var(--text3)}
+  .upload-file-input{display:none}
+  .file-status{display:flex;align-items:center;gap:10px;padding:.75rem 1rem;border-radius:8px;background:var(--surface2);font-size:12px;margin-top:8px}
+  .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .dot-ok{background:var(--green)}.dot-wait{background:var(--text3)}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .15s}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent2)}
+  .btn-primary:disabled{background:var(--text3);cursor:not-allowed}
+  .btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+  .btn-secondary:hover{background:var(--surface2)}
+  .log-box{font-family:'DM Mono',monospace;font-size:11px;background:var(--text);color:#A8E6CF;border-radius:8px;padding:1rem;max-height:160px;overflow-y:auto;margin-top:1rem;display:none}
+  .log-line{margin-bottom:3px}
+  .log-line.err{color:#FFB3B3}.log-line.ok{color:#A8E6CF}.log-line.info{color:#B3D9FF}
+  .update-meta{font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);text-align:right;margin-top:.5rem}
+  .loading{display:flex;align-items:center;justify-content:center;height:200px;color:var(--text3);font-size:13px;gap:10px}
+  .spinner{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .data-url-input{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:'DM Mono',monospace;background:var(--surface);color:var(--text);margin-bottom:8px}
+  .alert{padding:.75rem 1rem;border-radius:8px;font-size:12px;margin-bottom:1rem}
+  .alert-info{background:#EBF4FF;color:#1A5C9E;border:1px solid #B3D4F5}
+  .alert-warn{background:#FFF8E6;color:#8B6000;border:1px solid #F5D87A}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <div class="nav-logo">U</div>
+    <span class="nav-title">Producción Científica UARM</span>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showView('dashboard',this)">Dashboard</button>
+    <button class="nav-tab" onclick="showView('investigadores',this)">Investigadores</button>
+    <button class="nav-tab" onclick="showView('actualizar',this)">Actualizar datos</button>
+  </div>
+  <span class="nav-meta" id="nav-meta">Cargando...</span>
+</nav>
+
+<!-- DASHBOARD -->
+<div class="view active" id="view-dashboard">
+  <div id="loading-dash" class="loading"><div class="spinner"></div> Cargando datos...</div>
+  <div id="dash-content" style="display:none">
+    <div class="kpi-row">
+      <div class="kpi accent"><div class="kpi-label">Publicaciones</div><div class="kpi-value" id="kpi-total">—</div><div class="kpi-sub">Total histórico Scopus</div></div>
+      <div class="kpi"><div class="kpi-label">Citas totales</div><div class="kpi-value" id="kpi-citas">—</div><div class="kpi-sub">Histórico acumulado</div></div>
+      <div class="kpi"><div class="kpi-label">FWCI 2020–2026</div><div class="kpi-value" id="kpi-fwci">—</div><div class="kpi-sub">Umbral mundial = 1.0</div></div>
+      <div class="kpi"><div class="kpi-label">Acceso abierto</div><div class="kpi-value" id="kpi-oa">—</div><div class="kpi-sub" id="kpi-oa-sub">—</div></div>
+      <div class="kpi"><div class="kpi-label">Docs en top 10%</div><div class="kpi-value" id="kpi-top10">—</div><div class="kpi-sub">Percentil de citas (SciVal)</div></div>
+      <div class="kpi"><div class="kpi-label">Impacto en políticas</div><div class="kpi-value" id="kpi-pol">—</div><div class="kpi-sub" id="kpi-pol-sub">—</div></div>
+    </div>
+
+    <div class="section-title">Producción e impacto temporal (2020–2026)</div>
+    <div class="grid-2">
+      <div class="card"><div class="card-title">Documentos por año</div><div class="chart-wrap" style="height:200px"><canvas id="c-prod"></canvas></div></div>
+      <div class="card"><div class="card-title">FWCI por año vs. umbral mundial (1.0)</div><div class="chart-wrap" style="height:200px"><canvas id="c-fwci"></canvas></div></div>
+      <div class="card"><div class="card-title">Citas recibidas por año de publicación</div><div class="chart-wrap" style="height:200px"><canvas id="c-citas"></canvas></div></div>
+      <div class="card"><div class="card-title">Vistas por año (SciVal)</div><div class="chart-wrap" style="height:200px"><canvas id="c-vistas"></canvas></div></div>
+    </div>
+
+    <div class="section-title">Calidad y percentiles</div>
+    <div class="grid-2">
+      <div class="card"><div class="card-title">Publicaciones en top percentiles de citas (acumulado)</div><div class="chart-wrap" style="height:200px"><canvas id="c-perc"></canvas></div></div>
+      <div class="card"><div class="card-title">Quartil de revista por año (CiteScore)</div><div class="chart-wrap" style="height:200px"><canvas id="c-quart"></canvas></div></div>
+    </div>
+
+    <div class="section-title">Colaboración (2020–2026)</div>
+    <div class="grid-2">
+      <div class="card"><div class="card-title">Tipo de colaboración — documentos y FWCI</div><div class="collab-grid" id="collab-bars" style="margin-top:.5rem"></div></div>
+      <div class="card"><div class="card-title">Distribución de colaboración</div><div class="chart-wrap" style="height:200px"><canvas id="c-collab"></canvas></div></div>
+    </div>
+
+    <div class="section-title">Áreas temáticas principales (SciVal Topics)</div>
+    <div class="card full">
+      <div class="tbl-wrap"><table><thead><tr><th>Topic</th><th style="text-align:right">Docs</th><th style="text-align:right">FWCI</th><th style="text-align:right">Prominencia %</th></tr></thead><tbody id="tbody-areas"></tbody></table></div>
+    </div>
+
+    <div class="section-title">Revistas y acceso abierto</div>
+    <div class="grid-2">
+      <div class="card"><div class="card-title">Top revistas por volumen</div><div class="tbl-wrap"><table><thead><tr><th>Revista</th><th style="text-align:right">Docs</th><th style="text-align:right">Citas</th></tr></thead><tbody id="tbody-rev"></tbody></table></div></div>
+      <div class="card" style="display:flex;flex-direction:column;gap:16px">
+        <div><div class="card-title">Acceso abierto</div><div class="chart-wrap" style="height:150px"><canvas id="c-oa"></canvas></div></div>
+        <div><div class="card-title">Tipo de documento</div><div class="chart-wrap" style="height:150px"><canvas id="c-tipos"></canvas></div></div>
+      </div>
+    </div>
+    <p class="update-meta" id="update-meta"></p>
+  </div>
+</div>
+
+<!-- INVESTIGADORES -->
+<div class="view" id="view-investigadores">
+  <div class="section-title">Investigadores activos UARM (2020–2026)</div>
+  <div class="card full">
+    <input type="text" id="inv-search" placeholder="Buscar investigador o institución..."
+      style="width:100%;padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--surface);color:var(--text);margin-bottom:1rem"
+      oninput="filtrarInv()">
+    <div class="tbl-wrap">
+      <table><thead><tr><th>Investigador/a</th><th>Afiliación</th><th style="text-align:right">Docs</th><th style="text-align:right">Citas</th><th style="text-align:right">FWCI</th><th style="text-align:right">Vistas</th><th>Perfil</th></tr></thead><tbody id="tbody-inv"></tbody></table>
+    </div>
+    <p style="font-size:11px;color:var(--text3);margin-top:.75rem" id="inv-count"></p>
+  </div>
+</div>
+
+<!-- ACTUALIZAR -->
+<div class="view" id="view-actualizar">
+
+  <div class="alert alert-info">
+    <strong>Modo A — Actualización automática:</strong> sube los archivos de Scopus y SciVal y el dashboard se actualiza en el navegador. Los datos no se guardan en ningún servidor.
+  </div>
+
+  <div class="section-title">URL del archivo de datos (opcional)</div>
+  <p style="font-size:12px;color:var(--text2);margin-bottom:.75rem">
+    Si alojas <code>datos_uarm.json</code> en OneDrive con enlace público, pégalo aquí para que el dashboard cargue siempre la versión más reciente al abrirse.
+  </p>
+  <input type="text" id="json-url" class="data-url-input" placeholder="https://onedrive.live.com/...datos_uarm.json">
+  <button class="btn btn-secondary" style="margin-bottom:1.5rem" onclick="cargarDesdeURL()">Cargar desde URL</button>
+
+  <div class="section-title">Actualización manual por archivos</div>
+  <div class="grid-2">
+    <div>
+      <div class="card-title" style="margin-bottom:.5rem;font-size:13px;font-weight:500">Archivo Scopus (CSV)</div>
+      <div class="upload-area" id="drop-scopus" onclick="document.getElementById('input-scopus').click()"
+        ondragover="dragOver(event,'drop-scopus')" ondragleave="dragLeave('drop-scopus')" ondrop="dropFile(event,'scopus')">
+        <div class="upload-icon">⬆</div>
+        <div class="upload-title">Exportación Scopus</div>
+        <div class="upload-sub">Archivo CSV · Analyze search results</div>
+      </div>
+      <input type="file" id="input-scopus" class="upload-file-input" accept=".csv" onchange="loadFile(this,'scopus')">
+      <div class="file-status" id="status-scopus"><span class="dot dot-wait"></span><span id="status-scopus-text">Sin archivo</span></div>
+    </div>
+    <div>
+      <div class="card-title" style="margin-bottom:.5rem;font-size:13px;font-weight:500">Archivo SciVal (XLSX)</div>
+      <div class="upload-area" id="drop-scival" onclick="document.getElementById('input-scival').click()"
+        ondragover="dragOver(event,'drop-scival')" ondragleave="dragLeave('drop-scival')" ondrop="dropFile(event,'scival')">
+        <div class="upload-icon">⬆</div>
+        <div class="upload-title">Exportación SciVal</div>
+        <div class="upload-sub">Archivo XLSX · Institution Profile</div>
+      </div>
+      <input type="file" id="input-scival" class="upload-file-input" accept=".xlsx" onchange="loadFile(this,'scival')">
+      <div class="file-status" id="status-scival"><span class="dot dot-wait"></span><span id="status-scival-text">Sin archivo</span></div>
+    </div>
+  </div>
+  <div style="margin-top:1.5rem;display:flex;align-items:center;gap:12px">
+    <button class="btn btn-primary" id="btn-procesar" disabled onclick="procesarArchivos()">Procesar y actualizar</button>
+    <button class="btn btn-secondary" onclick="resetUpload()">Limpiar</button>
+    <button class="btn btn-secondary" id="btn-export" style="display:none" onclick="exportarJSON()">Descargar datos_uarm.json</button>
+  </div>
+  <div class="log-box" id="log-box"></div>
+
+  <div class="section-title" style="margin-top:2rem">Cómo exportar desde Scopus y SciVal</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Scopus</div>
+      <ol style="font-size:12px;color:var(--text2);padding-left:1.2rem;line-height:2.2">
+        <li>Busca por afiliación: <em>"Antonio Ruiz de Montoya"</em></li>
+        <li>Selecciona todos los resultados</li>
+        <li>Export → CSV</li>
+        <li>Marca: Citation info, Bibliographical info, Abstract &amp; keywords</li>
+        <li>Exportar</li>
+      </ol>
+    </div>
+    <div class="card">
+      <div class="card-title">SciVal</div>
+      <ol style="font-size:12px;color:var(--text2);padding-left:1.2rem;line-height:2.2">
+        <li>Institution Profile → UARM</li>
+        <li>Selecciona: Bibliometrics, Contribution, Research Fields, Collaboration, Impact</li>
+        <li>Rango: últimos 7 años</li>
+        <li>Exportar como Excel (.xlsx)</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<script>
+var DB = null;
+var CHARTS = {};
+var FILES = {scopus:null,scival:null};
+
+// ── NAVEGACIÓN ──────────────────────────────────────────────
+function showView(id, btn) {
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
+// ── CARGA DE DATOS ──────────────────────────────────────────
+function cargarDatos(data) {
+  DB = data;
+  renderDashboard();
+  renderInvestigadores();
+  document.getElementById('nav-meta').textContent = DB.meta || '';
+  document.getElementById('loading-dash').style.display = 'none';
+  document.getElementById('dash-content').style.display = 'block';
+}
+
+function cargarDesdeURL() {
+  var url = document.getElementById('json-url').value.trim();
+  if (!url) return;
+  fetch(url)
+    .then(r=>r.json())
+    .then(data=>{ cargarDatos(data); log('Datos cargados desde URL','ok'); })
+    .catch(e=>log('Error al cargar URL: '+e.message,'err'));
+}
+
+// Intentar cargar datos embebidos al inicio
+window.addEventListener('DOMContentLoaded', function() {
+  if (typeof DATOS_EMBEBIDOS !== 'undefined') {
+    cargarDatos(DATOS_EMBEBIDOS);
+  } else {
+    document.getElementById('loading-dash').innerHTML =
+      '<div style="text-align:center"><p style="margin-bottom:1rem;color:var(--text2)">No hay datos cargados.</p>' +
+      '<button class="btn btn-primary" onclick="showView(\'actualizar\',document.querySelectorAll(\'.nav-tab\')[2])">Ir a Actualizar datos →</button></div>';
+  }
+});
+
+// ── RENDER DASHBOARD ────────────────────────────────────────
+function renderDashboard() {
+  var d = DB;
+  document.getElementById('kpi-total').textContent  = d.kpis.total_docs;
+  document.getElementById('kpi-citas').textContent  = d.kpis.total_citas;
+  document.getElementById('kpi-fwci').textContent   = d.kpis.fwci;
+  document.getElementById('kpi-oa').textContent     = d.kpis.oa_pct + '%';
+  document.getElementById('kpi-oa-sub').textContent = d.kpis.oa_docs + ' de ' + d.kpis.total_docs + ' documentos';
+  document.getElementById('kpi-top10').textContent  = d.kpis.top10_docs;
+  document.getElementById('kpi-pol').textContent    = d.kpis.politicas_docs;
+  document.getElementById('kpi-pol-sub').textContent= 'Docs citados · ' + d.kpis.politicas_organismos + ' organismos';
+  document.getElementById('update-meta').textContent= 'Última actualización: ' + d.meta;
+
+  var yr  = d.serie.map(r=>r[0]);
+  var brd = 'rgba(26,25,22,0.08)', gray = '#9E9C93';
+  var sc  = {x:{grid:{color:brd},ticks:{font:{size:11},color:gray}},y:{grid:{color:brd},ticks:{font:{size:11},color:gray}}};
+
+  mk('c-prod','bar',yr,[{label:'Docs',data:d.serie.map(r=>r[1]),backgroundColor:'#C8401A',borderRadius:4}],{scales:sc});
+  mk('c-fwci','line',yr,[
+    {label:'FWCI',data:d.serie.map(r=>r[4]),borderColor:'#1A5C9E',backgroundColor:'rgba(26,92,158,0.08)',pointBackgroundColor:'#1A5C9E',pointRadius:5,tension:0.3,fill:true,borderWidth:2,pointStyle:'circle'},
+    {label:'Umbral',data:d.serie.map(r=>r[5]),borderColor:'#E24B4A',borderDash:[5,4],pointRadius:0,borderWidth:1.5,pointStyle:'line'}
+  ],{scales:sc});
+  mk('c-citas','bar',yr,[{label:'Citas',data:d.serie.map(r=>r[2]),backgroundColor:'#2A7A4B',borderRadius:4}],{scales:sc});
+  mk('c-vistas','bar',yr,[{label:'Vistas',data:d.serie.map(r=>r[6]),backgroundColor:'#1A5C9E',borderRadius:4}],{scales:sc});
+
+  var p=d.percentiles;
+  mk('c-perc','bar',['Top 1%','Top 5%','Top 10%','Top 25%'],
+    [{label:'Docs',data:[p.top1,p.top5,p.top10,p.top25],backgroundColor:['#C8401A','#E8602E','#F09060','#F8C0A0'],borderRadius:4}],
+    {indexAxis:'y',scales:{x:{grid:{color:brd},ticks:{font:{size:11},color:gray}},y:{grid:{color:brd},ticks:{font:{size:11},color:gray}}}});
+
+  var qy=d.quartiles.map(r=>r[0]);
+  mk('c-quart','bar',qy,[
+    {label:'Q1',data:d.quartiles.map(r=>r[1]),backgroundColor:'#1A5C9E',borderRadius:0},
+    {label:'Q2',data:d.quartiles.map(r=>r[2]),backgroundColor:'#2A7A4B',borderRadius:0},
+    {label:'Q3',data:d.quartiles.map(r=>r[3]),backgroundColor:'#B07020',borderRadius:0},
+    {label:'Q4',data:d.quartiles.map(r=>r[4]),backgroundColor:'#9E9C93',borderRadius:0}
+  ],{scales:sc,stacked:true});
+
+  mk('c-collab','doughnut',d.collab.map(r=>r[0]),
+    [{data:d.collab.map(r=>r[2]),backgroundColor:['#1A5C9E','#2A7A4B','#9E9C93','#C8C7C0'],borderWidth:2,borderColor:'#fff'}],
+    {cutout:'60%'});
+  mk('c-oa','doughnut',d.oa.map(r=>r[0]),
+    [{data:d.oa.map(r=>r[1]),backgroundColor:['#2A7A4B','#9E9C93','#B07020','#1A5C9E'],borderWidth:2,borderColor:'#fff'}],
+    {cutout:'60%'});
+  mk('c-tipos','doughnut',d.tipos.map(r=>r[0]),
+    [{data:d.tipos.map(r=>r[1]),backgroundColor:['#C8401A','#1A5C9E','#2A7A4B','#9E9C93','#B07020'],borderWidth:2,borderColor:'#fff'}],
+    {cutout:'60%'});
+
+  var cols=['#1A5C9E','#2A7A4B','#9E9C93','#C8C7C0'];
+  var mx=Math.max(...d.collab.map(r=>r[2]));
+  document.getElementById('collab-bars').innerHTML=d.collab.map((r,i)=>`
+    <div class="collab-item">
+      <span class="collab-label">${r[0]}</span>
+      <div class="collab-bar-bg"><div class="collab-bar-fill" style="width:${(r[2]/mx*100).toFixed(0)}%;background:${cols[i]}"></div></div>
+      <span class="collab-val">${r[2]} docs · FWCI ${r[5]}</span>
+    </div>`).join('');
+
+  document.getElementById('tbody-areas').innerHTML=d.areas.map(r=>`
+    <tr><td>${r[0]}</td><td class="td-num">${r[2]}</td><td class="td-num">${r[4]}</td><td class="td-num">${parseFloat(r[5]).toFixed(1)}</td></tr>`).join('');
+
+  document.getElementById('tbody-rev').innerHTML=d.revistas.map(r=>`
+    <tr><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r[0]}</td><td class="td-num">${r[1]}</td><td class="td-num">${r[2]}</td></tr>`).join('');
+}
+
+function mk(id,type,labels,datasets,extra){
+  if(CHARTS[id]){CHARTS[id].destroy()}
+  var ctx=document.getElementById(id); if(!ctx)return;
+  var opts={responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:type==='doughnut',position:'bottom',labels:{font:{size:11},boxWidth:10,boxHeight:10,padding:10}}}};
+  if(extra.scales){opts.scales=extra.scales}
+  if(extra.stacked){opts.scales.x.stacked=true;opts.scales.y.stacked=true}
+  if(extra.indexAxis)opts.indexAxis=extra.indexAxis;
+  if(extra.cutout)opts.cutout=extra.cutout;
+  CHARTS[id]=new Chart(ctx,{type:type,data:{labels:labels,datasets:datasets},options:opts});
+}
+
+// ── INVESTIGADORES ──────────────────────────────────────────
+function renderInvestigadores(){
+  if(!DB)return;
+  renderInvTable(DB.inv);
+}
+function renderInvTable(data){
+  document.getElementById('tbody-inv').innerHTML=data.map(r=>`
+    <tr>
+      <td><strong style="font-size:12px">${r[0]}</strong></td>
+      <td><span class="badge ${r[1].includes('Ruiz de Montoya')?'badge-uarm':'badge-ext'}">${r[1].includes('Ruiz de Montoya')?'UARM':r[1].split(' ').slice(0,3).join(' ')}</span></td>
+      <td class="td-num">${r[3]}</td><td class="td-num">${r[6]}</td><td class="td-num">${r[5]}</td><td class="td-num">${r[4]}</td>
+      <td>${r[8]?'<a href="'+r[8]+'" target="_blank" class="td-link" style="font-size:11px">Scopus ↗</a>':''}</td>
+    </tr>`).join('');
+  document.getElementById('inv-count').textContent=data.length+' investigadores';
+}
+function filtrarInv(){
+  if(!DB)return;
+  var q=document.getElementById('inv-search').value.toLowerCase();
+  renderInvTable(DB.inv.filter(r=>r[0].toLowerCase().includes(q)||r[1].toLowerCase().includes(q)));
+}
+
+// ── UPLOAD ──────────────────────────────────────────────────
+function dragOver(e,id){e.preventDefault();document.getElementById(id).classList.add('drag')}
+function dragLeave(id){document.getElementById(id).classList.remove('drag')}
+function dropFile(e,tipo){e.preventDefault();dragLeave('drop-'+tipo);var f=e.dataTransfer.files[0];if(f)processFile(f,tipo)}
+function loadFile(input,tipo){if(input.files[0])processFile(input.files[0],tipo)}
+function processFile(file,tipo){
+  FILES[tipo]=file;
+  document.querySelector('#status-'+tipo+' .dot').className='dot dot-ok';
+  document.getElementById('status-'+tipo+'-text').textContent=file.name+' ('+Math.round(file.size/1024)+' KB)';
+  if(FILES.scopus&&FILES.scival)document.getElementById('btn-procesar').disabled=false;
+}
+function resetUpload(){
+  FILES={scopus:null,scival:null};
+  ['scopus','scival'].forEach(t=>{
+    document.querySelector('#status-'+t+' .dot').className='dot dot-wait';
+    document.getElementById('status-'+t+'-text').textContent='Sin archivo';
+    document.getElementById('input-'+t).value='';
+  });
+  document.getElementById('btn-procesar').disabled=true;
+  document.getElementById('btn-export').style.display='none';
+  document.getElementById('log-box').style.display='none';
+  document.getElementById('log-box').innerHTML='';
+}
+function log(msg,type){
+  var box=document.getElementById('log-box');
+  box.style.display='block';
+  var l=document.createElement('div');
+  l.className='log-line '+(type||'info');
+  l.textContent='› '+msg;
+  box.appendChild(l);
+  box.scrollTop=box.scrollHeight;
+}
+
+function procesarArchivos(){
+  var btn=document.getElementById('btn-procesar');
+  btn.disabled=true; btn.textContent='Procesando...';
+  document.getElementById('log-box').innerHTML='';
+  log('Leyendo Scopus CSV...','info');
+
+  var r1=new FileReader();
+  r1.onload=function(e){
+    try{
+      var rows=parseCSV(e.target.result);
+      var h=rows[0];
+      var iY=h.indexOf('Year'),iC=h.indexOf('Cited by'),iOA=h.indexOf('Open Access'),
+          iT=h.indexOf('Document Type'),iS=h.indexOf('Source title');
+      var data=rows.slice(1).filter(r=>r.length>iY);
+      log('Scopus: '+data.length+' registros','ok');
+
+      var newDB = DB ? JSON.parse(JSON.stringify(DB)) : {};
+      if(!newDB.kpis) newDB.kpis={};
+
+      var prodMap={};
+      data.forEach(r=>{
+        var y=parseInt(r[iY]); var c=parseFloat(r[iC])||0;
+        if(!prodMap[y]){prodMap[y]={docs:0,citas:0}}
+        prodMap[y].docs++; prodMap[y].citas+=c;
+      });
+      newDB.prod=Object.keys(prodMap).sort().map(y=>[parseInt(y),prodMap[y].docs,prodMap[y].citas]);
+
+      var y20=Object.keys(prodMap).filter(y=>parseInt(y)>=2020).sort();
+      newDB.serie=y20.map(y=>[parseInt(y),prodMap[y].docs,prodMap[y].citas,
+        +(prodMap[y].citas/prodMap[y].docs).toFixed(2),(DB&&DB.serie?((DB.serie.find(s=>s[0]==parseInt(y))||[])[4])||null:null),1.0,
+        (DB&&DB.serie?((DB.serie.find(s=>s[0]==parseInt(y))||[])[6])||null:null)]);
+
+      var oaMap={};
+      data.forEach(r=>{var oa=r[iOA]||'';var t=oa.includes('Gold')?'Gold OA':oa.includes('Green')?'Green OA':oa.includes('Bronze')?'Bronze OA':'Closed';oaMap[t]=(oaMap[t]||0)+1});
+      newDB.oa=Object.entries(oaMap).sort((a,b)=>b[1]-a[1]);
+
+      var tipoMap={};
+      data.forEach(r=>{var t=r[iT]||'Otro';tipoMap[t]=(tipoMap[t]||0)+1});
+      newDB.tipos=Object.entries(tipoMap).sort((a,b)=>b[1]-a[1]).map(([k,v])=>[k,v]);
+
+      var revMap={};
+      data.forEach(r=>{var s=r[iS]||'';if(!revMap[s])revMap[s]={docs:0,citas:0};revMap[s].docs++;revMap[s].citas+=(parseFloat(r[iC])||0)});
+      newDB.revistas=Object.entries(revMap).sort((a,b)=>b[1].docs-a[1].docs).slice(0,12).map(([k,v])=>[k,v.docs,v.citas]);
+
+      var oaDocs=data.filter(r=>r[iOA]&&r[iOA].trim()!='').length;
+      newDB.kpis.total_docs=data.length;
+      newDB.kpis.total_citas=data.reduce((s,r)=>s+(parseFloat(r[iC])||0),0);
+      newDB.kpis.oa_docs=oaDocs;
+      newDB.kpis.oa_pct=Math.round(oaDocs/data.length*100);
+      log('KPIs Scopus actualizados','ok');
+
+      log('Leyendo SciVal XLSX...','info');
+      var r2=new FileReader();
+      r2.onload=function(e2){
+        try{
+          var wb=XLSX.read(e2.target.result,{type:'array'});
+          log('SciVal hojas: '+wb.SheetNames.join(', '),'ok');
+
+          if(wb.SheetNames.includes('Bibliometrics')){
+            var ws=wb.Sheets['Bibliometrics'];
+            var rows2=XLSX.utils.sheet_to_json(ws,{header:1});
+            rows2.forEach(function(row){
+              if(row[0]==='Field-Weighted Citation Impact'){
+                newDB.kpis.fwci=parseFloat(row[1])||newDB.kpis.fwci;
+                var yrs=['2020','2021','2022','2023','2024','2025','2026'];
+                newDB.serie.forEach(function(sr){
+                  var idx=yrs.indexOf(String(sr[0]));
+                  if(idx>=0&&row[idx+2])sr[4]=parseFloat(row[idx+2])||null;
+                });
+              }
+              if(row[0]==='Views'){
+                var yrs=['2020','2021','2022','2023','2024','2025','2026'];
+                newDB.serie.forEach(function(sr){
+                  var idx=yrs.indexOf(String(sr[0]));
+                  if(idx>=0&&row[idx+2])sr[6]=parseFloat(row[idx+2])||null;
+                });
+              }
+            });
+            log('FWCI y vistas actualizados','ok');
+          }
+
+          if(wb.SheetNames.includes('Contribution')){
+            var ws2=wb.Sheets['Contribution'];
+            var rows3=XLSX.utils.sheet_to_json(ws2,{header:1});
+            var ni=[];
+            rows3.forEach(function(row){
+              if(row[0]&&typeof row[0]==='string'&&row[3]&&!isNaN(row[3]))
+                ni.push([row[0],row[1]||'',row[2]||'',String(row[3]),String(row[4]||''),String(row[5]||''),String(row[6]||''),String(row[7]||''),row[8]||'']);
+            });
+            if(ni.length>0){newDB.inv=ni;log(ni.length+' investigadores actualizados','ok')}
+          }
+
+          var meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+          var now=new Date();
+          newDB.meta='Scopus + SciVal · '+meses[now.getMonth()]+' '+now.getFullYear();
+
+          DB=newDB;
+          log('Actualizando gráficos...','info');
+          renderDashboard();
+          renderInvestigadores();
+          document.getElementById('nav-meta').textContent=DB.meta;
+          document.getElementById('loading-dash').style.display='none';
+          document.getElementById('dash-content').style.display='block';
+          document.getElementById('btn-export').style.display='inline-flex';
+          log('¡Dashboard actualizado!','ok');
+          btn.textContent='✓ Procesado';
+        }catch(err){log('Error SciVal: '+err.message,'err');btn.disabled=false;btn.textContent='Procesar y actualizar'}
+      };
+      r2.readAsArrayBuffer(FILES.scival);
+    }catch(err){log('Error Scopus: '+err.message,'err');btn.disabled=false;btn.textContent='Procesar y actualizar'}
+  };
+  r1.readAsText(FILES.scopus,'UTF-8');
+}
+
+function exportarJSON(){
+  if(!DB)return;
+  var blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='datos_uarm.json';
+  a.click();
+  log('datos_uarm.json descargado. Súbelo a OneDrive para reemplazar el anterior.','ok');
+}
+
+function parseCSV(text){
+  var rows=[],current=[],field='',inQ=false;
+  for(var i=0;i<text.length;i++){
+    var c=text[i];
+    if(inQ){if(c==='"'&&text[i+1]==='"'){field+='"';i++}else if(c==='"')inQ=false;else field+=c}
+    else{if(c==='"')inQ=true;else if(c===','){current.push(field);field=''}
+    else if(c==='\n'||(c==='\r'&&text[i+1]==='\n')){if(c==='\r')i++;current.push(field);rows.push(current);current=[];field=''}
+    else field+=c}
+  }
+  if(field||current.length){current.push(field);rows.push(current)}
+  return rows.filter(r=>r.some(c=>c.trim()!==''));
+}
+</script>
+
+<!-- DATOS EMBEBIDOS — reemplazar este bloque cada mes con el nuevo datos_uarm.json -->
+<script>
+var DATOS_EMBEBIDOS = {"meta":"Scopus + SciVal \u00b7 Abril 2026","kpis":{"total_docs":116,"total_citas":367,"fwci":0.88,"oa_pct":61,"oa_docs":71,"top10_docs":10,"politicas_docs":3,"politicas_organismos":10},"serie":[[2020,7,71,10.1,1.14,1.0,916],[2021,7,32,4.6,0.84,1.0,642],[2022,11,50,4.5,0.57,1.0,981],[2023,21,46,2.2,0.65,1.0,2778],[2024,20,46,2.3,0.97,1.0,1773],[2025,29,13,0.4,1.07,1.0,2556],[2026,6,1,0.2,0.78,1.0,77]],"prod":[[2008,1,0],[2010,1,11],[2014,3,6],[2015,3,8],[2016,2,1],[2018,2,56],[2019,3,26],[2020,7,71],[2021,7,32],[2022,11,50],[2023,21,46],[2024,20,46],[2025,29,13],[2026,6,1]],"collab":[["Internacional",25.7,26,123,4.7,1.49],["Solo nacional",29.7,30,106,3.5,0.48],["Solo institucional",15.8,16,9,0.6,0.44],["Autor\u00eda individual",28.7,29,21,0.7,0.98]],"inv":[["Gonzales-Mi\u00f1\u00e1n, Milagros Del Carmen","Universidad Antonio Ruiz de Montoya","-","8","1014","0.49","40","56544742200","https://www.scopus.com/authid/detail.url?authorId=56544742200"],["Turpo-Gebera, Osbaldo Washington","Universidad Nacional San Agust\u00edn de Arequipa","Peru","6","804","0.58","39","55635770200","https://www.scopus.com/authid/detail.url?authorId=55635770200"],["Dejo, Juan Miguel","Universidad Antonio Ruiz de Montoya","-","6","454","0.29","2","58203729300","https://www.scopus.com/authid/detail.url?authorId=58203729300"],["Chacaltana-Cortez, Sofia","Universidad Antonio Ruiz de Montoya","-","5","404","3.39","34","57938927300","https://www.scopus.com/authid/detail.url?authorId=57938927300"],["Cohaila, E.","Universidad Antonio Ruiz de Montoya","-","4","654","0.03","7","57216549266","https://www.scopus.com/authid/detail.url?authorId=57216549266"],["Fern\u00e1ndez-Hart, Rafael","Universidad Antonio Ruiz de Montoya","-","4","199","0.00","0","58281826000","https://www.scopus.com/authid/detail.url?authorId=58281826000"],["Tineo Quispe, Luis Enrique","Universidad Antonio Ruiz de Montoya","-","4","454","0.16","1","58785795800","https://www.scopus.com/authid/detail.url?authorId=58785795800"],["Blouin, Cecile","Durham University","United Kingdom","3","383","4.19","68","57219966353","https://www.scopus.com/authid/detail.url?authorId=57219966353"],["Medina-Zuta, Patricia","Universidad San Ignacio de Loyola","Peru","3","394","0.84","23","57221994765","https://www.scopus.com/authid/detail.url?authorId=57221994765"],["Espinoza Suarez, S. M.","Universidad Nacional Mayor de San Marcos","Peru","3","240","0.00","0","57215063018","https://www.scopus.com/authid/detail.url?authorId=57215063018"]],"areas":[["Cultural Dynamics and Power in Andean Societies","T.1310","5","0.75","2.59","82.292"],["Husserl's Phenomenology and Intersubjective Experience","T.2120","3","0.21","1.1","82.271"],["Migration Policy and Discrimination in South America","T.44996","3","1.11","4.19","81.023"],["Indigenous Water Rights and Mining Conflicts in Chile","T.83329","3","2.83","0.08","72.21"],["Digital Competence Frameworks in Education","T.3273","2","0.07","0.25","99.393"],["Mental Health Impacts of COVID-19 Pandemic","T.205","1","0.01","1.22","99.875"],["Grief and Bereavement Support Systems","T.405","1","0.03","1.67","98.261"],["Religiosity and Mental Health Coping Strategies","T.603","1","0.04","0.0","97.14"],["Carbon Sequestration and Biomass Estimation","T.1125","1","0.05","0.67","97.763"],["Strategic Alliances and Joint Ventures in Innovation","T.768","1","0.09","0.12","96.845"]],"revistas":[["Desde el Sur",6,0],["International Journal of Religion and Spirituality in Society",4,0],["Metafora",3,0],["Journal of Archaeological Science: Reports",2,11],["Universidad y Sociedad",2,14],["Management Research",2,8],["Cuestiones Teologicas",2,0],["Izquierdas",2,4],["a/b: Auto/Biography Studies",2,2],["Revista de Critica Literaria Latinoamericana",2,0]],"oa":[["Gold OA",68],["Closed",45],["Bronze OA",2],["Green OA",1]],"tipos":[["Art\u00edculo",97],["Cap\u00edtulo libro",13],["Conferencia",4],["Note",1],["Review",1]],"percentiles":{"top1":2,"top5":5,"top10":10,"top25":17},"quartiles":[[2020,0,0,4,1],[2021,2,1,0,3],[2022,2,3,3,2],[2023,4,6,1,5],[2024,5,5,3,2],[2025,3,13,8,5],[2026,2,1,1,2]]};
+</script>
+
+</body>
+</html>
