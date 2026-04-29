@@ -320,7 +320,7 @@ tbody tr.clk{cursor:pointer}
     </div>
 
     <div class="splash-desc">
-      Herramienta de consulta bibliométrica elaborada por la <strong style="color:rgba(255,255,255,.75)">Subunidad de Servicios para la Investigación</strong> para el seguimiento de la producción académica de la UARM indexada en Scopus. Permite explorar indicadores de impacto, tendencias de publicación, perfiles de investigadores y patrones de colaboración internacional.
+      Herramienta de consulta bibliométrica elaborada por la Subunidad de Servicios para la Investigación para el seguimiento de la producción académica de la UARM indexada en Scopus. Permite explorar indicadores de impacto, tendencias de publicación, perfiles de investigadores y patrones de colaboración internacional.
     </div>
 
     <div class="splash-stats">
@@ -362,20 +362,18 @@ tbody tr.clk{cursor:pointer}
     </button>
 
     <div class="splash-footer">
-      Navega por las pestañas para explorar producción, publicaciones, investigadores, revistas y colaboración.<br>
-      Usa el selector de año (arriba a la derecha) para filtrar todos los indicadores por período.<br>
-      El <button onclick="closeSplash();sv('glosario',document.querySelectorAll('.ntab')[6])" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,.65);font-size:11px;font-family:'DM Sans',sans-serif;text-decoration:underline;padding:0">Glosario</button> explica cada indicador bibliométrico con ejemplos reales de la UARM.
+      <ol style="padding-left:1.1rem;margin-bottom:.4rem"><li style="margin-bottom:4px">Navega por las pestañas para explorar producción, publicaciones, investigadores, revistas y colaboración.</li><li style="margin-bottom:4px">Usa el selector de año (arriba a la derecha) para filtrar todos los indicadores por período.</li><li>
+      El <button onclick="closeSplash();sv('glosario',document.querySelectorAll('.ntab')[6])" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,.65);font-size:11px;font-family:'DM Sans',sans-serif;text-decoration:underline;padding:0">Glosario</button> explica cada indicador bibliométrico con ejemplos reales de la UARM.</li></ol>
     </div>
   </div>
 </div>
 
 
 <nav>
-  <div class="nb">
+  <div class="nb" onclick="openSplash()" style="cursor:pointer" title="Ver presentación">
     <div class="nl">U</div>
     <span class="nt">Producción Científica UARM</span>
   </div>
-  <button class="ntab" onclick="openSplash()" style="flex-shrink:0;border-right:1px solid rgba(255,255,255,.12);border-radius:0;padding:5px 12px 5px 6px;margin-right:4px" title="Ver presentación">⌂</button>
   <div class="ntabs">
     <button class="ntab on"  onclick="sv('resumen',this)">Resumen</button>
     <button class="ntab" onclick="sv('produccion',this)">Producción</button>
@@ -465,7 +463,7 @@ tbody tr.clk{cursor:pointer}
     </div>
   </div>
 
-  <div class="sec">Quartiles de revista por año <span class="help">?<span class="help-tip">Clasificación CiteScore de las revistas donde publica UARM. Q1 = top 25% de revistas mundiales en su área. Mayor proporción en Q1/Q2 indica publicación en revistas de mayor impacto.</span></span></div>
+  <div class="sec">Cuartiles de revista por año <span class="help">?<span class="help-tip">Clasificación CiteScore de las revistas donde publica UARM. Q1 = top 25% de revistas mundiales en su área. Mayor proporción en Q1/Q2 indica publicación en revistas de mayor impacto.</span></span></div>
   <div class="card full">
     <div class="cw" style="height:190px"><canvas id="c-quart"></canvas></div>
   </div>
@@ -492,10 +490,10 @@ tbody tr.clk{cursor:pointer}
       <select id="pt" onchange="fPubs()"><option value="">Todos los tipos</option></select>
       <select id="po" onchange="fPubs()">
         <option value="">Todo acceso</option>
-        <option value="Gold OA">Gold OA</option>
-        <option value="Verde OA">Verde OA</option>
-        <option value="Bronze OA">Bronze OA</option>
-        <option value="Cerrado">Cerrado</option>
+        <option value="Gold OA">OA Gold</option>
+        <option value="Verde OA">OA Verde</option>
+        <option value="Bronze OA">OA Bronce</option>
+        <option value="Cerrado">Acceso cerrado</option>
       </select>
       <select id="pl" onchange="fPubs()">
         <option value="">Todos los idiomas</option>
@@ -514,7 +512,7 @@ tbody tr.clk{cursor:pointer}
           <th class="nosort">Revista</th>
           <th class="nosort">Tipo</th>
           <th data-col="c" data-type="num" style="text-align:right">Citas</th>
-          <th class="nosort">OA</th>
+          <th class="nosort">Acceso</th>
           <th class="nosort">Idioma</th>
           <th class="nosort">Enlace</th>
         </tr></thead>
@@ -544,7 +542,7 @@ tbody tr.clk{cursor:pointer}
         <thead><tr>
           <th class="nosort">Investigador/a</th>
           <th class="nosort">Afiliación</th>
-          <th data-col="3" data-type="num" style="text-align:right">Docs</th>
+          <th data-col="3" data-type="num" style="text-align:right">Documentos</th>
           <th data-col="6" data-type="num" style="text-align:right">Citas</th>
           <th data-col="5" data-type="num" style="text-align:right">FWCI <span class="help" style="font-size:9px">?<span class="help-tip">Field-Weighted Citation Impact. Valores > 1.0 indican mayor impacto que la media mundial.</span></span></th>
           <th data-col="4" data-type="num" style="text-align:right">Vistas</th>
@@ -579,7 +577,7 @@ tbody tr.clk{cursor:pointer}
       <table id="tbl-revs">
         <thead><tr>
           <th class="nosort">Revista</th>
-          <th data-col="1" data-type="num" style="text-align:right">Docs</th>
+          <th data-col="1" data-type="num" style="text-align:right">Documentos</th>
           <th data-col="2" data-type="num" style="text-align:right">Citas</th>
           <th data-col="3" data-type="num" style="text-align:right">Citas/doc <span class="help" style="font-size:9px">?<span class="help-tip">Promedio de citas por documento publicado en esa revista. Indica rendimiento de citas de las publicaciones UARM en esa fuente.</span></span></th>
           <th data-col="4" data-type="num" style="text-align:right">Primer año</th>
@@ -611,7 +609,7 @@ tbody tr.clk{cursor:pointer}
         <thead><tr>
           <th class="nosort">Tipo</th>
           <th data-col="1" data-type="num" style="text-align:right">%</th>
-          <th data-col="2" data-type="num" style="text-align:right">Docs</th>
+          <th data-col="2" data-type="num" style="text-align:right">Documentos</th>
           <th data-col="3" data-type="num" style="text-align:right">Citas</th>
           <th data-col="4" data-type="num" style="text-align:right">Citas/doc</th>
           <th data-col="5" data-type="num" style="text-align:right">FWCI</th>
@@ -1084,7 +1082,7 @@ function renderPubs(){
       <td style="font-size:12px;color:var(--t2);max-width:110px">${p.f.substring(0,35)}${p.f.length>35?'…':''}</td>
       <td><span class="badge ${bTP[p.tp]||'b-ext'}">${lblTP2[p.tp]||p.tp}</span></td>
       <td class="tn">${p.c}</td>
-      <td><span class="badge ${bOA[p.o]||'b-cls'}">${p.o}</span></td>
+      <td><span class="badge ${bOA[p.o]||'b-cls'}">${{'Gold OA':'OA Gold','Verde OA':'OA Verde','Bronze OA':'OA Bronce','Cerrado':'Acceso cerrado'}[p.o]||p.o}</span></td>
       <td style="font-size:12px">${lblLang[p.l]||p.l}</td>
       <td>${p.d?`<a href="https://doi.org/${p.d}" target="_blank" class="tlink" onclick="event.stopPropagation()">DOI↗</a>`:''}</td>
     </tr>`).join('');
@@ -1160,7 +1158,7 @@ function openInv(nombre){
           <td style="padding:6px 7px;border-bottom:1px solid var(--brd);font-size:12px;line-height:1.35">${p.t.substring(0,90)}${p.t.length>90?'…':''}</td>
           <td style="padding:6px 7px;border-bottom:1px solid var(--brd);font-family:'DM Mono',monospace;font-size:11px;text-align:right;color:var(--t2)">${p.y}</td>
           <td style="padding:6px 7px;border-bottom:1px solid var(--brd);font-family:'DM Mono',monospace;font-size:11px;text-align:right;color:var(--t2)">${p.c}</td>
-          <td style="padding:6px 7px;border-bottom:1px solid var(--brd)"><span class="badge ${bOA[p.o]||'b-cls'}" style="font-size:9px">${p.o}</span></td>
+          <td style="padding:6px 7px;border-bottom:1px solid var(--brd)"><span class="badge ${bOA[p.o]||'b-cls'}" style="font-size:9px">${{'Gold OA':'OA Gold','Verde OA':'OA Verde','Bronze OA':'OA Bronce','Cerrado':'Acceso cerrado'}[p.o]||p.o}</span></td>
         </tr>`).join('')}
       </tbody>
     </table>`:'<p style="font-size:12px;color:var(--t3)">No se encontraron publicaciones en la muestra cargada.</p>'}`;
@@ -1173,20 +1171,22 @@ function openInv(nombre){
 function renderGlosario(){
   var terminos=[
     {n:'FWCI',src:'SciVal',d:'Field-Weighted Citation Impact. Compara las citas recibidas por un documento con el promedio mundial de documentos del mismo tipo, año y área temática. Un FWCI de 1.0 equivale exactamente al promedio global.',ex:'FWCI 1.49 (colaboración internacional UARM) = 49% más citado que el promedio mundial.'},
-    {n:'Scholarly Output',src:'SciVal / Scopus',d:'Número total de documentos publicados indexados en Scopus. Incluye artículos de revista, capítulos de libro, artículos de conferencia, revisiones y notas.',ex:'UARM: 101 documentos en el período 2020–2026.'},
-    {n:'Citation Count',src:'Scopus',d:'Número total de veces que un documento ha sido citado por otros trabajos indexados en Scopus. Indica la resonancia académica de la publicación.',ex:'Total UARM 2020–2026: 259 citas.'},
+    {n:'Producción científica (Scholarly Output)',src:'SciVal / Scopus',d:'Número total de documentos publicados indexados en Scopus. Incluye artículos de revista, capítulos de libro, artículos de conferencia, revisiones y notas.',ex:'UARM: 101 documentos en el período 2020–2026.'},
+    {n:'Número de citas (Citation Count)',src:'Scopus',d:'Número total de veces que un documento ha sido citado por otros trabajos indexados en Scopus. Indica la resonancia académica de la publicación.',ex:'Total UARM 2020–2026: 259 citas.'},
     {n:'Top 10% más citados',src:'SciVal',d:'Documentos que se ubican en el 10% más citado del mundo dentro de su campo, tipo de documento y año de publicación (cálculo field-weighted). Indicador de alto impacto.',ex:'UARM: 10 documentos en top 10% (2020–2026).'},
     {n:'Percentil de prominencia',src:'SciVal Topics',d:'Indica qué tan dinámico y con creciente atención es un topic de investigación en la comunidad científica mundial. Un percentil de 99% significa que el topic está en el 1% más prominente del mundo.',ex:'Digital Competence Frameworks: 99.4% de prominencia.'},
-    {n:'CiteScore Quartile',src:'Scopus',d:'Clasificación de las revistas según su CiteScore (promedio de citas en 4 años). Q1 = top 25%, Q2 = 26–50%, Q3 = 51–75%, Q4 = 76–100%. Publicar en Q1/Q2 indica revistas de mayor visibilidad.',ex:'UARM 2024: 5 documentos en Q1, 5 en Q2.'},
-    {n:'Gold OA',src:'Scopus',d:'Acceso Abierto dorado: el documento se publica directamente en una revista de acceso abierto. Es la modalidad más visible y accesible para lectores de cualquier institución.',ex:'68 documentos UARM con Gold OA (histórico).'},
-    {n:'Views Count',src:'SciVal',d:'Número de veces que el abstract o texto completo de un documento ha sido visualizado en Scopus. Indica visibilidad e interés de la comunidad académica.',ex:'UARM 2020–2026: 9,723 vistas totales.'},
+    {n:'Cuartil de revista (Q1–Q4)',src:'Scopus / CiteScore',d:'Clasificación de las revistas según su CiteScore (promedio de citas en 4 años). Q1 = top 25%, Q2 = 26–50%, Q3 = 51–75%, Q4 = 76–100%. Publicar en Q1/Q2 indica revistas de mayor visibilidad.',ex:'UARM 2024: 5 documentos en Q1, 5 en Q2.'},
+    {n:'Acceso abierto Gold (Gold OA)',src:'Scopus',d:'Acceso Abierto dorado: el documento se publica directamente en una revista de acceso abierto. Es la modalidad más visible y accesible para lectores de cualquier institución.',ex:'68 documentos UARM con Gold OA (histórico).'},
+    {n:'Vistas (Views Count)',src:'SciVal',d:'Número de veces que el abstract o texto completo de un documento ha sido visualizado en Scopus. Indica visibilidad e interés de la comunidad académica.',ex:'UARM 2020–2026: 9,723 vistas totales.'},
     {n:'Impacto en políticas',src:'SciVal',d:'Documentos citados en publicaciones de política pública: leyes, informes gubernamentales, directrices de organismos internacionales (ONU, OMS, etc.). Indica transferencia del conocimiento científico a la toma de decisiones.',ex:'3 documentos UARM citados en 13 documentos de política de 10 organismos en 6 países.'},
     {n:'Colaboración internacional',src:'SciVal',d:'Documentos co-autorados con investigadores de instituciones de diferentes países. Consistentemente asociada a mayor impacto: UARM muestra FWCI 1.49 en colaboraciones internacionales vs. 0.48 en solo nacionales.',ex:'26 documentos con colaboración internacional (25.7% del total).'},
-    {n:'Bronze OA / Verde OA',src:'Scopus',d:'Bronze OA: acceso libre temporal otorgado por la editorial, sin licencia abierta formal. Verde OA (Green): versión del autor depositada en un repositorio institucional o preprint. Ambas amplían el acceso pero con menor garantía de permanencia que Gold OA.',ex:'2 documentos UARM con Bronze OA, 1 con Verde OA (histórico).'},
-    {n:'Palabras clave de autor',src:'Scopus',d:'Términos asignados por los propios autores para describir el contenido de su publicación. Reflejan los temas de investigación y el vocabulario disciplinar de la institución.',ex:'Los términos más frecuentes en UARM: Peru, teaching, COVID-19, migration, corruption.'},
+    {n:'Acceso abierto Bronce y Verde (Bronze / Green OA)',src:'Scopus',d:'Bronze OA: acceso libre temporal otorgado por la editorial, sin licencia abierta formal. Verde OA (Green): versión del autor depositada en un repositorio institucional o preprint. Ambas amplían el acceso pero con menor garantía de permanencia que Gold OA.',ex:'2 documentos UARM con Bronze OA, 1 con Verde OA (histórico).'},
+    {n:'Palabras clave de autor (Author Keywords)',src:'Scopus',d:'Términos asignados por los propios autores para describir el contenido de su publicación. Reflejan los temas de investigación y el vocabulario disciplinar de la institución.',ex:'Los términos más frecuentes en UARM: Peru, teaching, COVID-19, migration, corruption.'},
     {n:'Citas por documento (Citas/doc)',src:'Scopus',d:'Promedio de citas recibidas por cada documento publicado en una revista. Indica el rendimiento de citas de la producción UARM en esa fuente específica, no el factor de impacto de la revista.',ex:'Una revista con 2 documentos y 18 citas tiene Citas/doc = 9.0.'},
     {n:'Co-autoría internacional',src:'Scopus',d:'Documento firmado por investigadores de dos o más países. La presencia de afiliaciones extranjeras se detecta en el campo Affiliations de Scopus.',ex:'UARM tiene co-autorías con instituciones de 13 países, siendo EE.UU. y España los más frecuentes.'},
-    {n:'Financiadores (Funding)',src:'Scopus',d:'Organismos mencionados en los agradecimientos de las publicaciones como fuentes de financiamiento. Se extrae del campo Funding Details de Scopus. No todos los autores declaran financiamiento.',ex:'NSF, National Geographic Society y FONDECYT figuran entre los financiadores de publicaciones UARM.'}
+    {n:'Financiadores',src:'Scopus',d:'Organismos mencionados en los agradecimientos de las publicaciones como fuentes de financiamiento. Se extrae del campo Funding Details de Scopus. No todos los autores declaran financiamiento.',ex:'NSF, National Geographic Society y FONDECYT figuran entre los financiadores de publicaciones UARM.'},
+    {n:'Tipo de documento',src:'Scopus',d:'Categoría de la publicación según su naturaleza: artículo de revista (mayor visibilidad internacional), capítulo de libro, artículo de conferencia, revisión o nota. Los artículos de revista tienen mayor alcance y posibilidades de citación.',ex:'UARM (histórico): 97 artículos, 13 capítulos, 4 conferencias, 1 nota, 1 revisión.'},
+    {n:'Idioma de publicación',src:'Scopus',d:'Lengua en que está escrito el documento. Publicar en inglés amplía el alcance internacional y las posibilidades de ser citado. Publicar en español contribuye a la difusión regional latinoamericana.',ex:'UARM (histórico): 62 documentos en inglés, 53 en español.'}
   ];
   document.getElementById('glosario-grid').innerHTML=terminos.map(t=>`
     <div class="gterm">
@@ -1371,7 +1371,7 @@ function escQ(s){return(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
         </div>
       </div>
       <div class="footer-desc">
-        Herramienta elaborada por la <strong style="color:rgba(255,255,255,.7)">Subunidad de Servicios para la Investigación</strong> de la Biblioteca P. Felipe MacGregor, SJ, para apoyar la gestión de la investigación institucional y la toma de decisiones del Vicerrectorado de Investigación.
+        Herramienta elaborada por la Subunidad de Servicios para la Investigación de la Biblioteca P. Felipe MacGregor, SJ, para apoyar la gestión de la investigación institucional y la toma de decisiones del Vicerrectorado de Investigación.
       </div>
     </div>
     <div>
