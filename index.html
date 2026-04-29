@@ -14,7 +14,7 @@
   --grn:#1E6B3A;--blu:#154F8A;--amb:#9A6010;
   --brd:rgba(24,23,15,.09);--brd2:rgba(24,23,15,.16);
   --r:8px;--r2:12px;
-  --fs:14px;
+  --fs:15px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);font-size:var(--fs);line-height:1.55}
@@ -42,6 +42,43 @@ nav{position:sticky;top:0;z-index:300;background:var(--tx);display:flex;align-it
 @media(max-width:820px){.g2,.g3{grid-template-columns:1fr 1fr}}
 @media(max-width:540px){.g2,.g3{grid-template-columns:1fr}}
 
+/* ── MOBILE ── */
+@media(max-width:700px){
+  nav{padding:0 .75rem;height:auto;flex-wrap:wrap;padding:.5rem .75rem;gap:.4rem}
+  .nb{width:100%;justify-content:space-between}
+  .ntabs{order:3;width:100%;overflow-x:auto;padding:.25rem 0;gap:1px;-webkit-overflow-scrolling:touch}
+  .ntab{padding:5px 10px;font-size:11px}
+  .nright{gap:6px}
+  .nmeta{display:none}
+  .yr-sel{font-size:11px;padding:3px 6px}
+  .view{padding:1rem .75rem}
+  .kgrid{grid-template-columns:repeat(2,1fr)!important}
+  .kpi .kv{font-size:20px}
+  .g2,.g3{grid-template-columns:1fr!important}
+  .card{padding:.75rem .85rem}
+  .ct{font-size:11px}
+  .cbrow{grid-template-columns:110px 1fr 85px;gap:5px}
+  .cblabel{font-size:11px}
+  .cbval{font-size:10px}
+  table{font-size:12px}
+  thead th{font-size:10px;padding:5px 6px}
+  tbody td{padding:5px 6px;font-size:12px}
+  .tn{font-size:10px}
+  .panel{width:100%;max-width:100vw;top:auto;bottom:0;height:85vh;border-radius:16px 16px 0 0;transform:translateY(100%)}
+  .pbg.on .panel{transform:translateY(0)}
+  .pkpis{grid-template-columns:repeat(2,1fr)}
+  .pag{gap:2px}
+  .pb{padding:4px 7px;font-size:11px}
+  .filters{gap:5px}
+  .filters input,.filters select{font-size:12px;padding:5px 8px}
+  .toppub-rank{font-size:18px;min-width:28px}
+  .toppub-title{font-size:12px}
+  .toppub-meta{font-size:11px}
+  .glosario{grid-template-columns:1fr!important}
+  .help-tip{width:200px;left:0;transform:none}
+  .sec{font-size:10px}
+}
+
 /* CARD */
 .card{background:var(--surf);border-radius:var(--r2);border:1px solid var(--brd);padding:.9rem 1rem}
 .card.full{grid-column:1/-1}
@@ -63,23 +100,23 @@ nav{position:sticky;top:0;z-index:300;background:var(--tx);display:flex;align-it
 
 /* TABLE */
 .tw{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:14px}
 thead th{text-align:left;padding:6px 9px;font-size:11px;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--brd);background:var(--s2);white-space:nowrap;cursor:pointer;user-select:none}
 thead th:hover{color:var(--tx)}
 thead th.asc::after{content:' ↑';color:var(--acc)}
 thead th.desc::after{content:' ↓';color:var(--acc)}
 thead th.nosort{cursor:default}
 thead th.nosort:hover{color:var(--t3)}
-tbody td{padding:7px 9px;border-bottom:1px solid var(--brd);vertical-align:top;font-size:13px}
+tbody td{padding:7px 9px;border-bottom:1px solid var(--brd);vertical-align:top;font-size:14px}
 tbody tr:last-child td{border-bottom:none}
 tbody tr:hover td{background:var(--bg)}
 tbody tr.clk{cursor:pointer}
-.tn{font-family:'DM Mono',monospace;font-size:12px;text-align:right;white-space:nowrap;color:var(--t2)}
-.tlink{color:var(--blu);text-decoration:none;font-size:12px}
+.tn{font-family:'DM Mono',monospace;font-size:13px;text-align:right;white-space:nowrap;color:var(--t2)}
+.tlink{color:var(--blu);text-decoration:none;font-size:13px}
 .tlink:hover{text-decoration:underline}
 
 /* BADGE */
-.badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;border-radius:999px;white-space:nowrap}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 7px;border-radius:999px;white-space:nowrap}
 .b-uarm{background:#FDEAE4;color:#7A2510}
 .b-ext{background:var(--s2);color:var(--t2)}
 .b-gold{background:#FFF3CD;color:#7A5010}
@@ -141,6 +178,10 @@ tbody tr.clk{cursor:pointer}
 /* YEAR BADGE */
 .ybadge{display:inline-flex;align-items:center;gap:4px;background:rgba(191,59,21,.1);color:var(--acc);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:500;margin-bottom:.9rem}
 .ybadge button{background:none;border:none;cursor:pointer;color:var(--acc);font-size:13px;line-height:1;padding:0 0 0 3px}
+@media(max-width:700px){
+  .ybadge{position:sticky;top:0;z-index:200;background:rgba(191,59,21,.95);color:#fff;border-radius:0;width:100%;justify-content:center;margin:0 0 .75rem;padding:6px 10px}
+  .ybadge button{color:#fff;font-size:15px}
+}
 
 /* PAGINATION */
 .pag{display:flex;align-items:center;gap:3px;margin-top:.85rem;flex-wrap:wrap}
@@ -155,8 +196,8 @@ tbody tr.clk{cursor:pointer}
 .gterm{background:var(--surf);border-radius:var(--r2);border:1px solid var(--brd);padding:.85rem 1rem}
 .gterm-name{font-size:13px;font-weight:500;color:var(--tx);margin-bottom:.3rem;display:flex;align-items:center;gap:6px}
 .gterm-badge{font-size:10px;padding:1px 7px;border-radius:999px;background:var(--s2);color:var(--t3);font-weight:400}
-.gterm-def{font-size:13px;color:var(--t2);line-height:1.55}
-.gterm-ex{font-size:12px;color:var(--t3);margin-top:.3rem;font-style:italic}
+.gterm-def{font-size:14px;color:var(--t2);line-height:1.6}
+.gterm-ex{font-size:13px;color:var(--t3);margin-top:.3rem;font-style:italic}
 
 /* KEYWORD CLOUD */
 .kwcloud{display:flex;flex-wrap:wrap;gap:5px;padding:.5rem 0}
@@ -175,15 +216,166 @@ tbody tr.clk{cursor:pointer}
 
 /* FONDO GRIS CLARO para secciones de glosario */
 .glos-view{background:var(--bg)}
+
+/* ── FOOTER ── */
+.footer{
+  background:var(--tx);color:rgba(255,255,255,.55);
+  padding:2rem 1.5rem 1.5rem;margin-top:3rem;
+}
+.footer-grid{
+  display:grid;grid-template-columns:2fr 1fr 1fr;
+  gap:2rem;max-width:1180px;margin:0 auto;
+}
+@media(max-width:700px){.footer-grid{grid-template-columns:1fr}}
+.footer-brand{display:flex;align-items:flex-start;gap:10px;margin-bottom:.75rem}
+.footer-logo{width:28px;height:28px;background:var(--acc);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-family:'DM Mono',monospace;color:#fff;font-weight:500;flex-shrink:0;margin-top:2px}
+.footer-name{font-size:13px;font-weight:500;color:#fff;line-height:1.35}
+.footer-desc{font-size:12px;line-height:1.6;color:rgba(255,255,255,.45);margin-top:.4rem}
+.footer-section-title{font-size:10px;font-weight:500;text-transform:uppercase;
+  letter-spacing:.08em;color:rgba(255,255,255,.35);margin-bottom:.6rem}
+.footer-item{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:.35rem;line-height:1.45}
+.footer-item strong{color:rgba(255,255,255,.75);font-weight:500}
+.footer-divider{border:none;border-top:1px solid rgba(255,255,255,.08);
+  max-width:1180px;margin:1.5rem auto .75rem}
+.footer-bottom{max-width:1180px;margin:0 auto;display:flex;
+  justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+.footer-copy{font-size:11px;color:rgba(255,255,255,.3)}
+.footer-sources{font-size:11px;color:rgba(255,255,255,.3);font-family:'DM Mono',monospace}
+
+/* ── SPLASH ── */
+.splash{
+  position:fixed;inset:0;z-index:1000;
+  background:var(--tx);
+  display:flex;align-items:center;justify-content:center;
+  padding:1.5rem;
+  transition:opacity .4s ease,visibility .4s ease;
+}
+.splash.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.splash-inner{
+  max-width:640px;width:100%;
+}
+.splash-logo{
+  width:44px;height:44px;background:var(--acc);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-family:'DM Mono',monospace;color:#fff;font-weight:500;
+  margin-bottom:1.5rem;
+}
+.splash-inst{font-size:12px;font-weight:500;color:rgba(255,255,255,.4);
+  text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem}
+.splash-title{font-size:32px;font-weight:300;color:#fff;line-height:1.2;margin-bottom:1rem}
+.splash-title strong{font-weight:500;color:var(--acc)}
+.splash-desc{font-size:15px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:1.75rem}
+.splash-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  margin-bottom:2rem;
+}
+@media(max-width:480px){.splash-stats{grid-template-columns:repeat(2,1fr)}}
+.splash-stat{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;padding:.75rem 1rem;
+}
+.splash-stat-v{font-size:24px;font-weight:300;font-family:'DM Mono',monospace;color:#fff;line-height:1}
+.splash-stat-l{font-size:11px;color:rgba(255,255,255,.4);margin-top:3px}
+.splash-sources{
+  display:flex;gap:8px;flex-wrap:wrap;margin-bottom:2rem;
+}
+.splash-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  border-radius:999px;padding:4px 12px;font-size:12px;color:rgba(255,255,255,.6);
+}
+.splash-badge span{color:rgba(255,255,255,.9);font-weight:500}
+.splash-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--acc);color:#fff;border:none;border-radius:8px;
+  padding:11px 22px;font-size:14px;font-weight:500;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:background .15s;
+}
+.splash-btn:hover{background:var(--acc2)}
+.splash-btn-arrow{font-size:16px;transition:transform .15s}
+.splash-btn:hover .splash-btn-arrow{transform:translateX(3px)}
+.splash-footer{
+  margin-top:1.5rem;font-size:11px;color:rgba(255,255,255,.25);line-height:1.5;
+}
+
 </style>
 </head>
 <body>
+
+<!-- SPLASH / BIENVENIDA -->
+<div class="splash" id="splash">
+  <div class="splash-inner">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem">
+      <div class="splash-logo">U</div>
+      <div>
+        <div class="splash-inst">Universidad Antonio Ruiz de Montoya</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.35)">Vicerrectorado de Investigación · Biblioteca P. Felipe MacGregor, SJ</div>
+      </div>
+    </div>
+
+    <div class="splash-title">
+      Dashboard de<br><strong>Producción Científica</strong>
+    </div>
+
+    <div class="splash-desc">
+      Herramienta de consulta bibliométrica elaborada por la <strong style="color:rgba(255,255,255,.75)">Subunidad de Servicios para la Investigación</strong> para el seguimiento de la producción académica de la UARM indexada en Scopus. Permite explorar indicadores de impacto, tendencias de publicación, perfiles de investigadores y patrones de colaboración internacional.
+    </div>
+
+    <div class="splash-stats">
+      <div class="splash-stat">
+        <div class="splash-stat-v">116</div>
+        <div class="splash-stat-l">Publicaciones en Scopus</div>
+      </div>
+      <div class="splash-stat">
+        <div class="splash-stat-v">367</div>
+        <div class="splash-stat-l">Citas acumuladas</div>
+      </div>
+      <div class="splash-stat">
+        <div class="splash-stat-v">0.88</div>
+        <div class="splash-stat-l">FWCI 2020–2026</div>
+      </div>
+      <div class="splash-stat">
+        <div class="splash-stat-v">278</div>
+        <div class="splash-stat-l">Investigadores registrados</div>
+      </div>
+      <div class="splash-stat">
+        <div class="splash-stat-v">61%</div>
+        <div class="splash-stat-l">Acceso abierto</div>
+      </div>
+      <div class="splash-stat">
+        <div class="splash-stat-v">26</div>
+        <div class="splash-stat-l">Colaboraciones internacionales</div>
+      </div>
+    </div>
+
+    <div class="splash-sources">
+      <div class="splash-badge">Fuente: <span>Scopus</span></div>
+      <div class="splash-badge">Indicadores: <span>SciVal</span></div>
+      <div class="splash-badge">Actualización: <span>Abril 2026</span></div>
+    </div>
+
+    <button class="splash-btn" onclick="closeSplash()">
+      Explorar el dashboard
+      <span class="splash-btn-arrow">→</span>
+    </button>
+
+    <div class="splash-footer">
+      Navega por las pestañas para explorar producción, publicaciones, investigadores, revistas y colaboración.<br>
+      Usa el selector de año (arriba a la derecha) para filtrar todos los indicadores por período.<br>
+      El <button onclick="closeSplash();sv('glosario',document.querySelectorAll('.ntab')[6])" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,.65);font-size:11px;font-family:'DM Sans',sans-serif;text-decoration:underline;padding:0">Glosario</button> explica cada indicador bibliométrico con ejemplos reales de la UARM.
+    </div>
+  </div>
+</div>
+
 
 <nav>
   <div class="nb">
     <div class="nl">U</div>
     <span class="nt">Producción Científica UARM</span>
   </div>
+  <button class="ntab" onclick="openSplash()" style="flex-shrink:0;border-right:1px solid rgba(255,255,255,.12);border-radius:0;padding:5px 12px 5px 6px;margin-right:4px" title="Ver presentación">⌂</button>
   <div class="ntabs">
     <button class="ntab on"  onclick="sv('resumen',this)">Resumen</button>
     <button class="ntab" onclick="sv('produccion',this)">Producción</button>
@@ -253,14 +445,14 @@ tbody tr.clk{cursor:pointer}
 <div class="view" id="view-produccion">
   <div class="sec">Evolución histórica completa</div>
   <div class="card full">
-    <div class="ct">Documentos y citas por año (2008–2026)</div>
+    <div class="ct">Documentos y citas por año (2008–2026) <span class="help">?<span class="help-tip">Evolución histórica completa de la producción UARM. Las barras muestran documentos publicados cada año; la línea azul muestra las citas recibidas por esos documentos.</span></span></div>
     <div class="cw" style="height:230px"><canvas id="c-hist"></canvas></div>
   </div>
 
   <div class="sec">Distribución de la producción</div>
   <div class="g3">
     <div class="card">
-      <div class="ct">Tipo de documento</div>
+      <div class="ct">Tipo de documento <span class="help">?<span class="help-tip">Clasificación de la producción según tipo: artículo de revista (mayoría), capítulo de libro, artículo de conferencia, nota o revisión. Los artículos de revista tienen mayor visibilidad internacional.</span></span></div>
       <div class="cw" style="height:175px"><canvas id="c-tipos"></canvas></div>
     </div>
     <div class="card">
@@ -268,7 +460,7 @@ tbody tr.clk{cursor:pointer}
       <div class="cw" style="height:175px"><canvas id="c-oa"></canvas></div>
     </div>
     <div class="card">
-      <div class="ct">Idioma</div>
+      <div class="ct">Idioma <span class="help">?<span class="help-tip">Idioma de publicación de los documentos. Publicar en inglés amplía significativamente el alcance internacional y las posibilidades de ser citado.</span></span></div>
       <div class="cw" style="height:175px"><canvas id="c-idioma"></canvas></div>
     </div>
   </div>
@@ -285,7 +477,7 @@ tbody tr.clk{cursor:pointer}
 
   <div class="sec">Financiadores de la investigación</div>
   <div class="card full">
-    <div class="ct">Organismos que han financiado publicaciones UARM en Scopus</div>
+    <div class="ct">Organismos que han financiado publicaciones UARM en Scopus <span class="help">?<span class="help-tip">Entidades financiadoras mencionadas en los agradecimientos de las publicaciones UARM. Indica qué organismos han respaldado económicamente la investigación institucional.</span></span></div>
     <div class="cw" style="height:220px"><canvas id="c-fund"></canvas></div>
   </div>
 </div>
@@ -370,7 +562,7 @@ tbody tr.clk{cursor:pointer}
   <div class="sec">Revistas de publicación</div>
   <div class="g2" style="margin-bottom:12px">
     <div class="card">
-      <div class="ct">Top 10 revistas por volumen</div>
+      <div class="ct">Top 10 revistas por volumen <span class="help">?<span class="help-tip">Revistas donde la UARM ha publicado más documentos. No indica necesariamente mayor impacto; una revista con pocos documentos puede tener más citas totales.</span></span></div>
       <div class="cw" style="height:240px"><canvas id="c-rev-docs"></canvas></div>
     </div>
     <div class="card">
@@ -405,7 +597,7 @@ tbody tr.clk{cursor:pointer}
   <div class="sec">Tipo de colaboración (SciVal 2020–2026)</div>
   <div class="g2">
     <div class="card">
-      <div class="ct">Distribución de documentos por tipo de colaboración</div>
+      <div class="ct">Distribución de documentos por tipo de colaboración <span class="help">?<span class="help-tip">Proporción de documentos según con quién se co-autoró: instituciones de otros países (internacional), otras instituciones peruanas (nacional), solo dentro de UARM (institucional), o un solo autor (individual).</span></span></div>
       <div class="cw" style="height:200px"><canvas id="c-cdona"></canvas></div>
     </div>
     <div class="card">
@@ -431,7 +623,7 @@ tbody tr.clk{cursor:pointer}
 
   <div class="sec">Co-autorías internacionales por país (histórico Scopus)</div>
   <div class="card full" style="margin-bottom:12px">
-    <div class="ct">Documentos con co-autoría — países colaboradores (excluye Perú)</div>
+    <div class="ct">Documentos con co-autoría — países colaboradores (excluye Perú) <span class="help">?<span class="help-tip">Países de las instituciones co-autoras en publicaciones UARM. Indica la red de colaboración internacional construida por los investigadores de la universidad.</span></span></div>
     <div class="cw" style="height:260px"><canvas id="c-paises"></canvas></div>
   </div>
 
@@ -482,6 +674,8 @@ window.addEventListener('DOMContentLoaded',function(){
   renderResumen();
   initPubs(); initInv(); initRevistas();
   renderGlosario();
+  initTableSort('tbl-pubs','pubs',renderPubs);
+  initTableSort('tbl-inv','inv',renderInv);
 });
 
 // ────────────────────────────────────────────────────────────
@@ -561,7 +755,10 @@ function buildCharts(){
   mkBar('c-prod',yr,[{label:'Documentos',
     data:DB.serie.map(r=>r[1]),
     backgroundColor:DB.serie.map(r=>sel&&r[0]!==sel?'rgba(191,59,21,.22)':'#BF3B15'),
-    borderRadius:3}],sc,function(idx){setYear(String(DB.serie[idx][0]))});
+    borderRadius:3}],sc,function(idx){
+    var y=String(DB.serie[idx][0]);
+    setYear(YEAR===parseInt(y)?'':y);
+  });
 
   mkLine('c-fwci',yr,[
     {label:'FWCI',data:DB.serie.map(r=>r[4]),borderColor:'#154F8A',
@@ -575,7 +772,10 @@ function buildCharts(){
   mkBar('c-citas',yr,[{label:'Citas',
     data:DB.serie.map(r=>r[2]),
     backgroundColor:DB.serie.map(r=>sel&&r[0]!==sel?'rgba(30,107,58,.22)':'#1E6B3A'),
-    borderRadius:3}],sc,function(idx){setYear(String(DB.serie[idx][0]))});
+    borderRadius:3}],sc,function(idx){
+    var y=String(DB.serie[idx][0]);
+    setYear(YEAR===parseInt(y)?'':y);
+  });
 
   // Impacto en políticas por año
   var polLabels=DB.pol_por_anio.map(r=>r[0]);
@@ -615,7 +815,7 @@ function renderCollabBars(){
 
 function renderTop10(){
   var top=DB.pubs.slice().sort((a,b)=>b.c-a.c).slice(0,10);
-  document.getElementById('top10-card').innerHTML='<div class="ct">Las 10 publicaciones más citadas</div>'+
+  document.getElementById('top10-card').innerHTML='<div class="ct">Las 10 publicaciones más citadas <span class="help">?<span class="help-tip">Documentos UARM con mayor número de citas acumuladas en Scopus. Son los trabajos de mayor resonancia en la comunidad académica internacional. Haz clic en cada título para ver el resumen y palabras clave.</span></span></div>'+
     top.map((p,i)=>`
       <div class="toppub" style="cursor:pointer" onclick="openPub(${DB.pubs.indexOf(p)})">
         <div class="toppub-row">
@@ -982,6 +1182,11 @@ function renderGlosario(){
     {n:'Views Count',src:'SciVal',d:'Número de veces que el abstract o texto completo de un documento ha sido visualizado en Scopus. Indica visibilidad e interés de la comunidad académica.',ex:'UARM 2020–2026: 9,723 vistas totales.'},
     {n:'Impacto en políticas',src:'SciVal',d:'Documentos citados en publicaciones de política pública: leyes, informes gubernamentales, directrices de organismos internacionales (ONU, OMS, etc.). Indica transferencia del conocimiento científico a la toma de decisiones.',ex:'3 documentos UARM citados en 13 documentos de política de 10 organismos en 6 países.'},
     {n:'Colaboración internacional',src:'SciVal',d:'Documentos co-autorados con investigadores de instituciones de diferentes países. Consistentemente asociada a mayor impacto: UARM muestra FWCI 1.49 en colaboraciones internacionales vs. 0.48 en solo nacionales.',ex:'26 documentos con colaboración internacional (25.7% del total).'},
+    {n:'Bronze OA / Verde OA',src:'Scopus',d:'Bronze OA: acceso libre temporal otorgado por la editorial, sin licencia abierta formal. Verde OA (Green): versión del autor depositada en un repositorio institucional o preprint. Ambas amplían el acceso pero con menor garantía de permanencia que Gold OA.',ex:'2 documentos UARM con Bronze OA, 1 con Verde OA (histórico).'},
+    {n:'Palabras clave de autor',src:'Scopus',d:'Términos asignados por los propios autores para describir el contenido de su publicación. Reflejan los temas de investigación y el vocabulario disciplinar de la institución.',ex:'Los términos más frecuentes en UARM: Peru, teaching, COVID-19, migration, corruption.'},
+    {n:'Citas por documento (Citas/doc)',src:'Scopus',d:'Promedio de citas recibidas por cada documento publicado en una revista. Indica el rendimiento de citas de la producción UARM en esa fuente específica, no el factor de impacto de la revista.',ex:'Una revista con 2 documentos y 18 citas tiene Citas/doc = 9.0.'},
+    {n:'Co-autoría internacional',src:'Scopus',d:'Documento firmado por investigadores de dos o más países. La presencia de afiliaciones extranjeras se detecta en el campo Affiliations de Scopus.',ex:'UARM tiene co-autorías con instituciones de 13 países, siendo EE.UU. y España los más frecuentes.'},
+    {n:'Financiadores (Funding)',src:'Scopus',d:'Organismos mencionados en los agradecimientos de las publicaciones como fuentes de financiamiento. Se extrae del campo Funding Details de Scopus. No todos los autores declaran financiamiento.',ex:'NSF, National Geographic Society y FONDECYT figuran entre los financiadores de publicaciones UARM.'}
   ];
   document.getElementById('glosario-grid').innerHTML=terminos.map(t=>`
     <div class="gterm">
@@ -1134,7 +1339,59 @@ function mkPag(elId,total,pp,cur,cb){
   h+=`<button class="pb" ${cur===pages?'disabled':''} onclick="(${cb.toString()})(${cur+1})">›</button>`;
   document.getElementById(elId).innerHTML=h;
 }
+
+function openSplash(){
+  document.getElementById('splash').classList.remove('hidden');
+}
+function closeSplash(){
+  document.getElementById('splash').classList.add('hidden');
+  // Guardar en sessionStorage para no mostrarlo de nuevo en la misma sesión
+  try{sessionStorage.setItem('splash_seen','1')}catch(e){}
+}
+// Si ya se vio en esta sesión, no mostrar
+try{
+  if(sessionStorage.getItem('splash_seen')==='1'){
+    var s=document.getElementById('splash');
+    if(s)s.classList.add('hidden');
+  }
+}catch(e){}
+
 function escQ(s){return(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
 </script>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand">
+        <div class="footer-logo">U</div>
+        <div>
+          <div class="footer-name">Vicerrectorado de Investigación</div>
+          <div class="footer-name" style="font-weight:400;font-size:12px;color:rgba(255,255,255,.45)">Biblioteca P. Felipe MacGregor, SJ · UARM</div>
+        </div>
+      </div>
+      <div class="footer-desc">
+        Herramienta elaborada por la <strong style="color:rgba(255,255,255,.7)">Subunidad de Servicios para la Investigación</strong> de la Biblioteca P. Felipe MacGregor, SJ, para apoyar la gestión de la investigación institucional y la toma de decisiones del Vicerrectorado de Investigación.
+      </div>
+    </div>
+    <div>
+      <div class="footer-section-title">Fuentes de datos</div>
+      <div class="footer-item"><strong>Scopus</strong><br>Base de datos de literatura científica revisada por pares. Elsevier.</div>
+      <div class="footer-item" style="margin-top:.5rem"><strong>SciVal</strong><br>Plataforma de análisis bibliométrico basada en Scopus. Elsevier.</div>
+    </div>
+    <div>
+      <div class="footer-section-title">Información</div>
+      <div class="footer-item"><strong>Última actualización</strong><br>Abril 2026</div>
+      <div class="footer-item" style="margin-top:.5rem"><strong>Cobertura</strong><br>Producción histórica UARM indexada en Scopus</div>
+      <div class="footer-item" style="margin-top:.5rem"><strong>Contacto</strong><br>servicios.investigacion@uarm.pe</div>
+    </div>
+  </div>
+  <hr class="footer-divider">
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 Universidad Antonio Ruiz de Montoya · Todos los derechos reservados</div>
+    <div class="footer-sources">Scopus + SciVal · Abril 2026</div>
+  </div>
+</footer>
+
 </body>
 </html>
