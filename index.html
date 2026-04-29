@@ -463,10 +463,6 @@ tbody tr.clk{cursor:pointer}
     </div>
   </div>
 
-  <div class="sec">Cuartiles de revista por año <span class="help">?<span class="help-tip">Clasificación CiteScore de las revistas donde publica UARM. Q1 = top 25% de revistas mundiales en su área. Mayor proporción en Q1/Q2 indica publicación en revistas de mayor impacto.</span></span></div>
-  <div class="card full">
-    <div class="cw" style="height:190px"><canvas id="c-quart"></canvas></div>
-  </div>
 
   <div class="sec">Palabras clave más frecuentes (autor)</div>
   <div class="card full">
@@ -525,7 +521,7 @@ tbody tr.clk{cursor:pointer}
 
 <!-- ═══ INVESTIGADORES ════════════════════════════════════ -->
 <div class="view" id="view-investigadores">
-  <div class="sec">Investigadores con producción UARM (2020–2026)</div>
+  <div class="sec">Todos los investigadores vinculados a publicaciones UARM (2020–2026)</div>
   <div class="card full">
     <div class="filters">
       <input type="text" id="is" placeholder="Buscar nombre o institución..." oninput="fInv()">
@@ -558,6 +554,10 @@ tbody tr.clk{cursor:pointer}
 <!-- ═══ REVISTAS ══════════════════════════════════════════ -->
 <div class="view" id="view-revistas">
   <div class="sec">Revistas de publicación</div>
+<div class="sec">Cuartiles de revista por año <span class="help">?<span class="help-tip">Clasificación CiteScore de las revistas donde publica UARM. Q1 = top 25% de revistas mundiales en su área. Mayor proporción en Q1/Q2 indica publicación en revistas de mayor impacto.</span></span></div>
+  <div class="card full">
+    <div class="cw" style="height:190px"><canvas id="c-quart"></canvas></div>
+  </div>
   <div class="g2" style="margin-bottom:12px">
     <div class="card">
       <div class="ct">Top 10 revistas por volumen <span class="help">?<span class="help-tip">Revistas donde la UARM ha publicado más documentos. No indica necesariamente mayor impacto; una revista con pocos documentos puede tener más citas totales.</span></span></div>
@@ -629,6 +629,29 @@ tbody tr.clk{cursor:pointer}
   <div class="card full">
     <div class="cw" style="height:240px"><canvas id="c-inst"></canvas></div>
   </div>
+
+  <div class="sec">Investigadores externos en co-autoría con UARM</div>
+  <div class="card full">
+    <div class="filters">
+      <input type="text" id="ext-search" placeholder="Buscar investigador o institución..." oninput="fExt()">
+      <span class="fc" id="ext-count"></span>
+    </div>
+    <div class="tw">
+      <table id="tbl-ext">
+        <thead><tr>
+          <th class="nosort">Investigador/a</th>
+          <th class="nosort">Institución</th>
+          <th class="nosort">País</th>
+          <th data-col="3" data-type="num" style="text-align:right">Documentos con UARM</th>
+          <th data-col="6" data-type="num" style="text-align:right">Citas</th>
+          <th data-col="5" data-type="num" style="text-align:right">FWCI</th>
+          <th class="nosort">Perfil</th>
+        </tr></thead>
+        <tbody id="tbody-ext"></tbody>
+      </table>
+    </div>
+    <div class="pag" id="pag-ext"></div>
+  </div>
 </div>
 
 <!-- ═══ GLOSARIO ══════════════════════════════════════════ -->
@@ -662,7 +685,7 @@ var DB = {"meta": "Scopus + SciVal · Abril 2026", "kpis": {"total_docs": 116, "
 var YEAR=null, CH={};
 var PP=1,IP=1,RP=1; var PPG=20,IPG=25,RPG=25;
 var FP=[],FI=[],FR=[];
-var PSORT={pubs:{col:'c',dir:'desc'},inv:{col:'3',dir:'desc'},revs:{col:'1',dir:'desc'},collab:{col:'2',dir:'desc'}};
+var PSORT={pubs:{col:'c',dir:'desc'},inv:{col:'3',dir:'desc'},revs:{col:'1',dir:'desc'},collab:{col:'2',dir:'desc'},ext:{col:'3',dir:'desc'}};
 
 // ────────────────────────────────────────────────────────────
 // INIT
@@ -858,8 +881,8 @@ function renderProduccion(){
   var hy=DB.prod_hist.map(r=>r[0]);
   var sc2={
     x:{grid:{color:'rgba(24,23,15,.06)'},ticks:{font:{size:11},color:'#9A9890'}},
-    y:{grid:{color:'rgba(24,23,15,.06)'},ticks:{font:{size:11},color:'#9A9890'},position:'left'},
-    y1:{grid:{display:false},ticks:{font:{size:11},color:'#154F8A'},position:'right'}
+    y:{grid:{color:'rgba(24,23,15,.06)'},ticks:{font:{size:11},color:'#9A9890'},position:'left',min:0},
+    y1:{grid:{display:false},ticks:{font:{size:11},color:'#154F8A'},position:'right',min:0,beginAtZero:true}
   };
   CH['c-hist']=new Chart(document.getElementById('c-hist'),{
     type:'bar',
@@ -885,14 +908,7 @@ function renderProduccion(){
   var lang=calcDistrib('l',{English:'Inglés',Spanish:'Español',French:'Francés'});
   mkDona('c-idioma',lang.map(r=>r[0]),lang.map(r=>r[1]),['#154F8A','#BF3B15','#9A9890']);
 
-  // Quartiles
-  var qy=DB.serie.map(r=>r[0]);
-  mkBar('c-quart',qy,[
-    {label:'Q1',data:DB.serie.map(r=>r[8]),backgroundColor:'#154F8A',borderRadius:0},
-    {label:'Q2',data:DB.serie.map(r=>r[9]),backgroundColor:'#1E6B3A',borderRadius:0},
-    {label:'Q3',data:DB.serie.map(r=>r[10]),backgroundColor:'#9A6010',borderRadius:0},
-    {label:'Q4',data:DB.serie.map(r=>r[11]),backgroundColor:'#9A9890',borderRadius:0}
-  ],bsc(),null,false,true);
+  // Quartiles → se renderizan en renderRevCharts()
 
   // Keywords
   var maxKW=DB.keywords[0][1];
@@ -966,6 +982,9 @@ function renderColaboracion(){
               y:{grid:{color:'rgba(24,23,15,.06)'},ticks:{font:{size:11},color:'#9A9890'}}}}
   });
 
+  // Investigadores externos
+  initExt();
+
   // Instituciones
   var inst=DB.instituciones.slice(0,15);
   CH['c-inst']=new Chart(document.getElementById('c-inst'),{
@@ -1000,6 +1019,7 @@ function renderRevCharts(){
   var top10c=DB.revistas.slice().sort((a,b)=>b[2]-a[2]).slice(0,10);
   if(CH['c-rev-docs'])CH['c-rev-docs'].destroy();
   if(CH['c-rev-citas'])CH['c-rev-citas'].destroy();
+  if(CH['c-quart'])CH['c-quart'].destroy();
   CH['c-rev-docs']=new Chart(document.getElementById('c-rev-docs'),{
     type:'bar',
     data:{labels:top10d.map(r=>r[0].length>30?r[0].substring(0,30)+'…':r[0]),
@@ -1018,6 +1038,14 @@ function renderRevCharts(){
       scales:{x:{grid:{color:'rgba(24,23,15,.06)'},ticks:{font:{size:11},color:'#9A9890'}},
               y:{grid:{color:'rgba(24,23,15,.06)'},ticks:{font:{size:11},color:'#9A9890'}}}}
   });
+  // Cuartiles de revista
+  var qy=DB.serie.map(r=>r[0]);
+  mkBar('c-quart',qy,[
+    {label:'Q1',data:DB.serie.map(r=>r[8]),backgroundColor:'#154F8A',borderRadius:0},
+    {label:'Q2',data:DB.serie.map(r=>r[9]),backgroundColor:'#1E6B3A',borderRadius:0},
+    {label:'Q3',data:DB.serie.map(r=>r[10]),backgroundColor:'#9A6010',borderRadius:0},
+    {label:'Q4',data:DB.serie.map(r=>r[11]),backgroundColor:'#9A9890',borderRadius:0}
+  ],bsc(),null,false,true);
 }
 function fRevs(){
   var q=(document.getElementById('rs').value||'').toLowerCase();
@@ -1073,6 +1101,7 @@ function rPubs(){
 }
 function renderPubs(){
   sortData(FP,'pubs');
+  syncSortHeaders('tbl-pubs','pubs');
   var s=(PP-1)*PPG, pg=FP.slice(s,s+PPG);
   document.getElementById('tbody-pubs').innerHTML=pg.map((p,ri)=>`
     <tr class="clk" onclick="openPub(${DB.pubs.indexOf(p)})">
@@ -1111,6 +1140,7 @@ function fInv(){
 function rInv(){document.getElementById('is').value='';document.getElementById('ia').value='';fInv()}
 function renderInv(){
   sortDataArr(FI,'inv');
+  syncSortHeaders('tbl-inv','inv');
   var s=(IP-1)*IPG, pg=FI.slice(s,s+IPG);
   document.getElementById('icount').textContent=FI.length+' investigadores';
   document.getElementById('tbody-inv').innerHTML=pg.map(r=>`
@@ -1168,6 +1198,39 @@ function openInv(nombre){
 // ────────────────────────────────────────────────────────────
 // GLOSARIO
 // ────────────────────────────────────────────────────────────
+
+// ── INVESTIGADORES EXTERNOS (Colaboración) ─────────────────
+var FE=[], EP=1; var EPG=20;
+function initExt(){
+  FE=DB.inv.filter(r=>!r[1].includes('Ruiz de Montoya'));
+  renderExt();
+  initTableSort('tbl-ext','ext',renderExt);
+  document.getElementById('ext-count').textContent=FE.length+' investigadores';
+}
+function fExt(){
+  var q=(document.getElementById('ext-search').value||'').toLowerCase();
+  FE=DB.inv.filter(r=>!r[1].includes('Ruiz de Montoya')&&
+    (!q||(r[0]+r[1]+r[2]).toLowerCase().includes(q)));
+  EP=1; renderExt();
+  document.getElementById('ext-count').textContent=FE.length+' investigadores';
+}
+function renderExt(){
+  sortDataArr(FE,'ext');
+  syncSortHeaders('tbl-ext','ext');
+  var s=(EP-1)*EPG, pg=FE.slice(s,s+EPG);
+  document.getElementById('tbody-ext').innerHTML=pg.map(r=>`
+    <tr class="clk" onclick="openInv('${escQ(r[0])}')">
+      <td style="font-size:13px;font-weight:500">${r[0]}</td>
+      <td style="font-size:12px;color:var(--t2)">${r[1]||'—'}</td>
+      <td style="font-size:12px;color:var(--t2)">${r[2]||'—'}</td>
+      <td class="tn">${r[3]}</td>
+      <td class="tn">${r[6]}</td>
+      <td class="tn" style="color:${r[5]>=1?'var(--grn)':'inherit'}">${r[5]}</td>
+      <td>${r[8]?`<a href="${r[8]}" target="_blank" class="tlink" onclick="event.stopPropagation()">Scopus↗</a>`:''}</td>
+    </tr>`).join('');
+  mkPag('pag-ext',FE.length,EPG,EP,p=>{EP=p;renderExt()});
+}
+
 function renderGlosario(){
   var terminos=[
     {n:'FWCI',src:'SciVal',d:'Field-Weighted Citation Impact. Compara las citas recibidas por un documento con el promedio mundial de documentos del mismo tipo, año y área temática. Un FWCI de 1.0 equivale exactamente al promedio global.',ex:'FWCI 1.49 (colaboración internacional UARM) = 49% más citado que el promedio mundial.'},
@@ -1343,6 +1406,18 @@ function mkPag(elId,total,pp,cur,cb){
 function openSplash(){
   document.getElementById('splash').classList.remove('hidden');
 }
+
+function syncSortHeaders(tblId,key){
+  var tbl=document.getElementById(tblId);
+  if(!tbl||!PSORT[key])return;
+  tbl.querySelectorAll('thead th').forEach(function(th){
+    th.classList.remove('asc','desc');
+    if(th.dataset.col===PSORT[key].col){
+      th.classList.add(PSORT[key].dir);
+    }
+  });
+}
+
 function closeSplash(){
   document.getElementById('splash').classList.add('hidden');
   // Guardar en sessionStorage para no mostrarlo de nuevo en la misma sesión
