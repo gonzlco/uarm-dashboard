@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Producción Científica · UARM</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&family=DM+Mono:wght@400;500&display=swap');
 :root{
@@ -885,14 +886,40 @@ function renderProduccion(){
     y1:{grid:{display:false},ticks:{font:{size:11},color:'#154F8A'},position:'right',min:0,beginAtZero:true}
   };
   CH['c-hist']=new Chart(document.getElementById('c-hist'),{
+    plugins: typeof ChartDataLabels!=='undefined' ? [ChartDataLabels] : [],
     type:'bar',
     data:{labels:hy,datasets:[
       {label:'Documentos',data:DB.prod_hist.map(r=>r[1]),backgroundColor:'#BF3B15',borderRadius:3,yAxisID:'y'},
       {label:'Citas',data:DB.prod_hist.map(r=>r[2]),type:'line',borderColor:'#154F8A',
-       backgroundColor:'transparent',pointRadius:3,tension:.3,borderWidth:2,yAxisID:'y1'}
+       backgroundColor:'transparent',
+       pointRadius:7,pointHoverRadius:9,
+       pointBackgroundColor:'#fff',
+       pointBorderColor:'#154F8A',
+       pointBorderWidth:2.5,
+       tension:.3,borderWidth:2.5,yAxisID:'y1',
+       datalabels:{
+         display:true,
+         align:'top',
+         anchor:'end',
+         color:'#154F8A',
+         font:{size:10,weight:'500',family:"'DM Mono', monospace"},
+         formatter:function(v){return v>0?v:''}
+       }}
     ]},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:true,position:'top',labels:{font:{size:11},boxWidth:9,boxHeight:9,padding:10}}},
+      plugins:{
+        legend:{display:true,position:'top',labels:{font:{size:11},boxWidth:9,boxHeight:9,padding:10}},
+        datalabels:{
+          display:function(ctx){
+            // Mostrar label solo en dataset de citas (index 1) cuando el valor > 0
+            return ctx.datasetIndex===1 && ctx.dataset.data[ctx.dataIndex]>0;
+          },
+          align:'top',anchor:'end',
+          color:'#154F8A',
+          font:{size:10,weight:'500'},
+          formatter:function(v){return v}
+        }
+      },
       scales:sc2}
   });
 
