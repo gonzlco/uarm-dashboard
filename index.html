@@ -521,7 +521,7 @@ tbody tr.clk{cursor:pointer}
       <table id="tbl-pubs">
         <thead><tr>
           <th data-col="t" data-type="str" style="min-width:220px">Título</th>
-          <th class="nosort">Autores</th>
+          <th data-col="a" data-type="str">Autores</th>
           <th data-col="y" data-type="num">Año</th>
           <th data-col="f" data-type="str">Revista</th>
           <th data-col="tp" data-type="str">Tipo</th>
@@ -713,8 +713,7 @@ window.addEventListener('DOMContentLoaded',function(){
   renderResumen();
   initPubs(); initInv(); initRevistas();
   renderGlosario();
-  initTableSort('tbl-pubs','pubs',renderPubs);
-  initTableSort('tbl-inv','inv',renderInv);
+
 });
 
 // ────────────────────────────────────────────────────────────
@@ -1123,6 +1122,7 @@ function initPubs(){
   var lblTP={Article:'Artículo','Book chapter':'Capítulo','Conference paper':'Conferencia',Review:'Revisión',Note:'Nota'};
   tipos.forEach(t=>sel2.innerHTML+=`<option value="${t}">${lblTP[t]||t}</option>`);
   fPubs();
+  initTableSort('tbl-pubs','pubs',renderPubs);
 }
 var bOA={'Gold OA':'b-gold','Verde OA':'b-grn','Bronze OA':'b-gold','Cerrado':'b-cls'};
 var bTP={Article:'b-art','Book chapter':'b-cap','Conference paper':'b-conf'};
@@ -1169,14 +1169,13 @@ function renderPubs(){
 }
 // Ordenamiento tabla publicaciones por clic en encabezado
 document.addEventListener('DOMContentLoaded',function(){
-  initTableSort('tbl-pubs','pubs',renderPubs);
-  initTableSort('tbl-inv','inv',renderInv);
+
 });
 
 // ────────────────────────────────────────────────────────────
 // INVESTIGADORES
 // ────────────────────────────────────────────────────────────
-function initInv(){FI=[...DB.inv];renderInv()}
+function initInv(){FI=[...DB.inv];renderInv();initTableSort('tbl-inv','inv',renderInv);}
 function fInv(){
   var q=(document.getElementById('is').value||'').toLowerCase();
   var fa=document.getElementById('ia').value;
@@ -1312,117 +1311,10 @@ function renderGlosario(){
 // ────────────────────────────────────────────────────────────
 // ORDENAMIENTO DE TABLAS
 // ────────────────────────────────────────────────────────────
-function initTableSort(tblId,key,renderFn){
-  var tbl=document.getElementById(tblId);
-  if(!tbl)return;
-  tbl.querySelectorAll('thead th[data-col]').forEach(th=>{
-    th.addEventListener('click',function(){
-      var col=this.dataset.col;
-      var type=this.dataset.type||'str';
-      if(PSORT[key].col===col){
-        // Misma columna: toggle asc/desc
-        PSORT[key].dir=PSORT[key].dir==='asc'?'desc':'asc';
-      } else {
-        // Nueva columna: primera vez siempre desc para números, asc para texto
-        PSORT[key].col=col;
-        var isStrCol={t:1,f:1,tp:1,o:1,l:1}[col]||
-          ((key==='ext'||key==='inv')&&!isNaN(parseInt(col))&&parseInt(col)<=2);
-        PSORT[key].dir=isStrCol?'asc':'desc';
-      }
-      tbl.querySelectorAll('thead th').forEach(h=>h.classList.remove('asc','desc'));
-      this.classList.add(PSORT[key].dir);
-      if(key==='pubs'){PP=1}else if(key==='inv'){IP=1}else if(key==='ext'){EP=1}
-      renderFn();
-    });
-  });
-}
-function sortData(arr,key){
-  var s=PSORT[key];
-  if(!s)return;
-  var col=s.col, dir=s.dir;
-  // Determinar tipo de datos
-  var strCols={t:1,f:1,tp:1,o:1,l:1};
-  var isStr=strCols[col];
-  arr.sort(function(a,b){
-    var va=a[col]||'', vb=b[col]||'';
-    if(isStr){
-      va=String(va).toLowerCase(); vb=String(vb).toLowerCase();
-      return dir==='asc'?va.localeCompare(vb):vb.localeCompare(va);
-    } else {
-      va=parseFloat(va)||0; vb=parseFloat(vb)||0;
-      return dir==='asc'?va-vb:vb-va;
-    }
-  });
-}
-function sortDataArr(arr,key){
-  var s=PSORT[key];
-  if(!s)return;
-  var col=s.col, dir=s.dir;
-  var idx=parseInt(col);
-  var strKeys={ext:{0:1,1:1,2:1},inv:{0:1,1:1}};
-  var isStr=strKeys[key]&&strKeys[key][col];
-  arr.sort(function(a,b){
-    var va=a[idx]||'', vb=b[idx]||'';
-    if(isStr){
-      va=String(va).toLowerCase(); vb=String(vb).toLowerCase();
-      return dir==='asc'?va.localeCompare(vb):vb.localeCompare(va);
-    } else {
-      va=parseFloat(va)||0; vb=parseFloat(vb)||0;
-      return dir==='asc'?va-vb:vb-va;
-    }
-  });
-}
-function renderSortTable(tblId,tbodyId,data,rowFn,key,initSort){
-  if(initSort!==false){
-    var s=PSORT[key];
-    if(s){
-      var idx=parseInt(s.col);
-      var isStrCol=({revs:{0:1},collab:{}}[key]||{})[String(s.col)];
-      data.sort((a,b)=>{
-        if(isStrCol){
-          var sa=String(a[idx]||'').toLowerCase(),sb=String(b[idx]||'').toLowerCase();
-          return s.dir==='asc'?sa.localeCompare(sb):sb.localeCompare(sa);
-        }
-        var va=parseFloat(a[idx])||0,vb=parseFloat(b[idx])||0;
-        return s.dir==='asc'?va-vb:vb-va;
-      });
-    }
-  }
-  document.getElementById(tbodyId).innerHTML=data.map(rowFn).join('');
-  // Bind sort to table
-  var tbl=document.getElementById(tblId);
-  if(tbl&&!tbl._sortBound){
-    tbl._sortBound=true;
-    tbl.querySelectorAll('thead th[data-col]').forEach(th=>{
-      th.addEventListener('click',function(){
-        var col=this.dataset.col;
-        var idx=parseInt(col);
-        if(PSORT[key]&&PSORT[key].col===col){
-          // Misma columna: toggle
-          PSORT[key].dir=PSORT[key].dir==='asc'?'desc':'asc';
-        } else {
-          if(!PSORT[key])PSORT[key]={};
-          PSORT[key].col=col;
-          // Primera vez: asc para col 0 (texto), desc para números
-          PSORT[key].dir=(col==='0'&&(key==='revs'||key==='collab'))?'asc':'desc';
-        }
-        tbl.querySelectorAll('thead th').forEach(h=>h.classList.remove('asc','desc'));
-        this.classList.add(PSORT[key].dir);
-        var rsStr=PSORT[key]&&{revs:{0:1},collab:{}};
-        var rsIsStr=rsStr&&rsStr[key]&&rsStr[key][col];
-        data.sort((a,b)=>{
-          if(rsIsStr){
-            var sa=String(a[idx]||'').toLowerCase(),sb=String(b[idx]||'').toLowerCase();
-            return PSORT[key].dir==='asc'?sa.localeCompare(sb):sb.localeCompare(sa);
-          }
-          var va=parseFloat(a[idx])||0,vb=parseFloat(b[idx])||0;
-          return PSORT[key].dir==='asc'?va-vb:vb-va;
-        });
-        document.getElementById(tbodyId).innerHTML=data.map(rowFn).join('');
-      });
-    });
-  }
-}
+
+
+
+
 
 // ────────────────────────────────────────────────────────────
 // PANEL
@@ -1491,15 +1383,97 @@ function openSplash(){
   document.getElementById('splash').classList.remove('hidden');
 }
 
-function syncSortHeaders(tblId,key){
-  var tbl=document.getElementById(tblId);
-  if(!tbl||!PSORT[key])return;
-  tbl.querySelectorAll('thead th').forEach(function(th){
-    th.classList.remove('asc','desc');
-    if(th.dataset.col===PSORT[key].col){
+
+
+
+// ── SISTEMA DE ORDENAMIENTO ─────────────────────────────────
+// Estado: PSORT[key] = {col, dir}
+// Uso: bindSort(tblId, key, renderFn) — llamar UNA vez después de crear la tabla
+
+function bindSort(tblId, key, renderFn) {
+  var tbl = document.getElementById(tblId);
+  if (!tbl) return;
+  if (tbl._sortBound) return; // Evitar doble binding
+  tbl._sortBound = true;
+  tbl.querySelectorAll('thead th[data-col]').forEach(function(th) {
+    th.style.cursor = 'pointer';
+    th.addEventListener('click', function() {
+      var col = this.dataset.col;
+      if (!PSORT[key]) PSORT[key] = {col: col, dir: 'desc'};
+      if (PSORT[key].col === col) {
+        // Misma columna → toggle
+        PSORT[key].dir = PSORT[key].dir === 'asc' ? 'desc' : 'asc';
+      } else {
+        // Columna nueva → dir inicial según tipo
+        PSORT[key].col = col;
+        PSORT[key].dir = (this.dataset.type === 'str') ? 'asc' : 'desc';
+      }
+      // Actualizar indicadores visuales
+      tbl.querySelectorAll('thead th').forEach(function(h) {
+        h.classList.remove('asc', 'desc');
+      });
+      this.classList.add(PSORT[key].dir);
+      // Reset paginación
+      if (key === 'pubs') PP = 1;
+      else if (key === 'inv') IP = 1;
+      else if (key === 'ext') EP = 1;
+      else if (key === 'revs') RP = 1;
+      renderFn();
+    });
+  });
+}
+
+function applySortHeaders(tblId, key) {
+  var tbl = document.getElementById(tblId);
+  if (!tbl || !PSORT[key]) return;
+  tbl.querySelectorAll('thead th').forEach(function(th) {
+    th.classList.remove('asc', 'desc');
+    if (th.dataset.col === PSORT[key].col) {
       th.classList.add(PSORT[key].dir);
     }
   });
+}
+
+function sortArr(arr, col, dir, isStr) {
+  arr.sort(function(a, b) {
+    var va = a[col] || '', vb = b[col] || '';
+    if (isStr) {
+      va = String(va).toLowerCase(); vb = String(vb).toLowerCase();
+      return dir === 'asc' ? va.localeCompare(vb, 'es') : vb.localeCompare(va, 'es');
+    }
+    va = parseFloat(va) || 0; vb = parseFloat(vb) || 0;
+    return dir === 'asc' ? va - vb : vb - va;
+  });
+}
+
+function applySort(arr, key) {
+  var s = PSORT[key];
+  if (!s || !s.col || !arr || !arr.length) return;
+  // Para arrays de arrays, usar índice numérico
+  var col = Array.isArray(arr[0]) ? parseInt(s.col) : s.col;
+  var sample = arr[0][col];
+  var isStr = typeof sample === 'string';
+  sortArr(arr, col, s.dir, isStr);
+}
+
+// Compatibilidad con llamadas antiguas
+function initTableSort(tblId, key, renderFn) { bindSort(tblId, key, renderFn); }
+function syncSortHeaders(tblId, key) { applySortHeaders(tblId, key); }
+function sortData(arr, key) { applySort(arr, key); }
+function sortDataArr(arr, key) { applySort(arr, key); }
+
+
+function renderSortTable(tblId, tbodyId, data, rowFn, key, skipSort) {
+  if (!skipSort) applySort(data, key);
+  document.getElementById(tbodyId).innerHTML = data.map(rowFn).join('');
+  applySortHeaders(tblId, key);
+  // Bind sort (bindSort maneja el guard internamente)
+  var rfn = function() {
+    applySort(data, key);
+    document.getElementById(tbodyId).innerHTML = data.map(rowFn).join('');
+    applySortHeaders(tblId, key);
+  };
+  bindSort(tblId, key, rfn);
 }
 
 function closeSplash(){
