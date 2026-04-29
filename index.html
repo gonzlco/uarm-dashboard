@@ -201,8 +201,25 @@ tbody tr.clk{cursor:pointer}
 .gterm-ex{font-size:13px;color:var(--t3);margin-top:.3rem;font-style:italic}
 
 /* KEYWORD CLOUD */
-.kwcloud{display:flex;flex-wrap:wrap;gap:5px;padding:.5rem 0}
-.kwtag{display:inline-block;border-radius:6px;font-size:11px;padding:3px 9px;background:var(--s2);color:var(--t2);font-weight:400;cursor:default}
+.kwcloud{display:flex;flex-wrap:wrap;gap:6px;padding:.75rem 0;align-items:center}
+.kwtag{
+  display:inline-flex;align-items:center;gap:5px;
+  border-radius:999px;padding:4px 12px;
+  font-weight:400;cursor:default;
+  border:1px solid var(--brd2);
+  transition:all .15s;
+  background:var(--surf);
+}
+.kwtag:hover{background:var(--s2);border-color:var(--brd2)}
+.kwtag-cnt{
+  font-family:'DM Mono',monospace;
+  background:var(--s2);
+  border-radius:999px;
+  padding:1px 6px;
+  font-size:10px;
+  color:var(--t3);
+  font-weight:500;
+}
 
 /* TOP PUBS */
 .toppub{padding:.75rem 0;border-bottom:1px solid var(--brd)}
@@ -487,9 +504,9 @@ tbody tr.clk{cursor:pointer}
       <select id="pt" onchange="fPubs()"><option value="">Todos los tipos</option></select>
       <select id="po" onchange="fPubs()">
         <option value="">Todo acceso</option>
-        <option value="Gold OA">OA Gold</option>
-        <option value="Verde OA">OA Verde</option>
-        <option value="Bronze OA">OA Bronce</option>
+        <option value="Gold OA">Acceso abierto (oro)</option>
+        <option value="Verde OA">Acceso abierto (verde)</option>
+        <option value="Bronze OA">Acceso abierto (bronce)</option>
         <option value="Cerrado">Acceso cerrado</option>
       </select>
       <select id="pl" onchange="fPubs()">
@@ -503,14 +520,14 @@ tbody tr.clk{cursor:pointer}
     <div class="tw">
       <table id="tbl-pubs">
         <thead><tr>
-          <th class="nosort" style="min-width:220px">Título</th>
+          <th data-col="t" data-type="str" style="min-width:220px">Título</th>
           <th class="nosort">Autores</th>
           <th data-col="y" data-type="num">Año</th>
-          <th class="nosort">Revista</th>
-          <th class="nosort">Tipo</th>
+          <th data-col="f" data-type="str">Revista</th>
+          <th data-col="tp" data-type="str">Tipo</th>
           <th data-col="c" data-type="num" style="text-align:right">Citas</th>
-          <th class="nosort">Acceso</th>
-          <th class="nosort">Idioma</th>
+          <th data-col="o" data-type="str">Acceso</th>
+          <th data-col="l" data-type="str">Idioma</th>
           <th class="nosort">Enlace</th>
         </tr></thead>
         <tbody id="tbody-pubs"></tbody>
@@ -537,8 +554,8 @@ tbody tr.clk{cursor:pointer}
     <div class="tw">
       <table id="tbl-inv">
         <thead><tr>
-          <th class="nosort">Investigador/a</th>
-          <th class="nosort">Afiliación</th>
+          <th data-col="0" data-type="str">Investigador/a</th>
+          <th data-col="1" data-type="str">Afiliación</th>
           <th data-col="3" data-type="num" style="text-align:right">Documentos</th>
           <th data-col="6" data-type="num" style="text-align:right">Citas</th>
           <th data-col="5" data-type="num" style="text-align:right">FWCI <span class="help" style="font-size:9px">?<span class="help-tip">Field-Weighted Citation Impact. Valores > 1.0 indican mayor impacto que la media mundial.</span></span></th>
@@ -577,7 +594,7 @@ tbody tr.clk{cursor:pointer}
     <div class="tw">
       <table id="tbl-revs">
         <thead><tr>
-          <th class="nosort">Revista</th>
+          <th data-col="0" data-type="str">Revista</th>
           <th data-col="1" data-type="num" style="text-align:right">Documentos</th>
           <th data-col="2" data-type="num" style="text-align:right">Citas</th>
           <th data-col="3" data-type="num" style="text-align:right">Citas/doc <span class="help" style="font-size:9px">?<span class="help-tip">Promedio de citas por documento publicado en esa revista. Indica rendimiento de citas de las publicaciones UARM en esa fuente.</span></span></th>
@@ -608,7 +625,7 @@ tbody tr.clk{cursor:pointer}
     <div class="tw">
       <table id="tbl-collab">
         <thead><tr>
-          <th class="nosort">Tipo</th>
+          <th data-col="tp" data-type="str">Tipo</th>
           <th data-col="1" data-type="num" style="text-align:right">%</th>
           <th data-col="2" data-type="num" style="text-align:right">Documentos</th>
           <th data-col="3" data-type="num" style="text-align:right">Citas</th>
@@ -640,9 +657,9 @@ tbody tr.clk{cursor:pointer}
     <div class="tw">
       <table id="tbl-ext">
         <thead><tr>
-          <th class="nosort">Investigador/a</th>
-          <th class="nosort">Institución</th>
-          <th class="nosort">País</th>
+          <th data-col="0" data-type="str">Investigador/a</th>
+          <th data-col="1" data-type="str">Institución</th>
+          <th data-col="2" data-type="str">País</th>
           <th data-col="3" data-type="num" style="text-align:right">Documentos con UARM</th>
           <th data-col="6" data-type="num" style="text-align:right">Citas</th>
           <th data-col="5" data-type="num" style="text-align:right">FWCI</th>
@@ -860,7 +877,7 @@ function openPub(idx){
   document.getElementById('ptitle').textContent=p.t;
   document.getElementById('psub').textContent=p.f+' · '+p.y;
   document.getElementById('pkpis').innerHTML=[
-    {l:'Citas',v:p.c},{l:'Año',v:p.y},{l:'Idioma',v:{English:'Inglés',Spanish:'Español',French:'Francés'}[p.l]||p.l},{l:'Acceso',v:p.o}
+    {l:'Citas',v:p.c},{l:'Año',v:p.y},{l:'Idioma',v:{English:'Inglés',Spanish:'Español',French:'Francés'}[p.l]||p.l},{l:'Acceso',v:({'Gold OA':'Acceso abierto (oro)','Verde OA':'Acceso abierto (verde)','Bronze OA':'Acceso abierto (bronce)','Cerrado':'Acceso cerrado'}[p.o]||p.o)}
   ].map(k=>`<div class="pk"><div class="pkl">${k.l}</div><div class="pkv" style="font-size:16px">${k.v}</div></div>`).join('');
   var kws=p.kw?p.kw.split(';').filter(k=>k.trim()).map(k=>`<span class="ptag">${k.trim()}</span>`).join(''):'';
   document.getElementById('pbody').innerHTML=`
@@ -928,7 +945,7 @@ function renderProduccion(){
   mkDona('c-tipos',tipos.map(r=>r[0]),tipos.map(r=>r[1]),['#BF3B15','#154F8A','#1E6B3A','#9A9890','#9A6010']);
 
   // OA
-  var oad=calcDistrib('o',{});
+  var oad=calcDistrib('o',{'Gold OA':'Acceso abierto (oro)','Verde OA':'Acceso abierto (verde)','Bronze OA':'Acceso abierto (bronce)','Cerrado':'Acceso cerrado'});
   mkDona('c-oa',oad.map(r=>r[0]),oad.map(r=>r[1]),['#1E6B3A','#9A9890','#9A6010','#154F8A']);
 
   // Idioma
@@ -942,7 +959,13 @@ function renderProduccion(){
   document.getElementById('kwcloud').innerHTML=DB.keywords.map(([k,v])=>{
     var sz=Math.round(11+(v/maxKW)*8);
     var op=0.4+0.6*(v/maxKW);
-    return `<span class="kwtag" style="font-size:${sz}px;opacity:${op}">${k} <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--t3)">${v}</span></span>`;
+        // Color por frecuencia
+    var colors=['#E5EDFC','#D4EDDA','#FFF3CD','#F3E8FF','#E5F5EC'];
+    var colorIdx=Math.min(Math.floor((v/maxKW)*5),4);
+    var bgColors=['rgba(21,79,138,.08)','rgba(30,107,58,.08)','rgba(154,96,16,.08)','rgba(80,48,160,.08)','rgba(191,59,21,.08)'];
+    var textColors=['#154F8A','#1E6B3A','#9A6010','#5030A0','#BF3B15'];
+    var bg=bgColors[colorIdx]; var tc=textColors[colorIdx];
+    return `<span class="kwtag" style="font-size:${sz}px;background:${bg};color:${tc};border-color:${bg}">${k}<span class="kwtag-cnt">${v}</span></span>`;
   }).join('');
 
   // Financiadores
@@ -1138,7 +1161,7 @@ function renderPubs(){
       <td style="font-size:12px;color:var(--t2);max-width:110px">${p.f.substring(0,35)}${p.f.length>35?'…':''}</td>
       <td><span class="badge ${bTP[p.tp]||'b-ext'}">${lblTP2[p.tp]||p.tp}</span></td>
       <td class="tn">${p.c}</td>
-      <td><span class="badge ${bOA[p.o]||'b-cls'}">${{'Gold OA':'OA Gold','Verde OA':'OA Verde','Bronze OA':'OA Bronce','Cerrado':'Acceso cerrado'}[p.o]||p.o}</span></td>
+      <td><span class="badge ${bOA[p.o]||'b-cls'}">${{'Gold OA':'Acceso abierto (oro)','Verde OA':'Acceso abierto (verde)','Bronze OA':'Acceso abierto (bronce)','Cerrado':'Acceso cerrado'}[p.o]||p.o}</span></td>
       <td style="font-size:12px">${lblLang[p.l]||p.l}</td>
       <td>${p.d?`<a href="https://doi.org/${p.d}" target="_blank" class="tlink" onclick="event.stopPropagation()">DOI↗</a>`:''}</td>
     </tr>`).join('');
@@ -1215,7 +1238,7 @@ function openInv(nombre){
           <td style="padding:6px 7px;border-bottom:1px solid var(--brd);font-size:12px;line-height:1.35">${p.t.substring(0,90)}${p.t.length>90?'…':''}</td>
           <td style="padding:6px 7px;border-bottom:1px solid var(--brd);font-family:'DM Mono',monospace;font-size:11px;text-align:right;color:var(--t2)">${p.y}</td>
           <td style="padding:6px 7px;border-bottom:1px solid var(--brd);font-family:'DM Mono',monospace;font-size:11px;text-align:right;color:var(--t2)">${p.c}</td>
-          <td style="padding:6px 7px;border-bottom:1px solid var(--brd)"><span class="badge ${bOA[p.o]||'b-cls'}" style="font-size:9px">${{'Gold OA':'OA Gold','Verde OA':'OA Verde','Bronze OA':'OA Bronce','Cerrado':'Acceso cerrado'}[p.o]||p.o}</span></td>
+          <td style="padding:6px 7px;border-bottom:1px solid var(--brd)"><span class="badge ${bOA[p.o]||'b-cls'}" style="font-size:9px">${{'Gold OA':'Acceso abierto (oro)','Verde OA':'Acceso abierto (verde)','Bronze OA':'Acceso abierto (bronce)','Cerrado':'Acceso cerrado'}[p.o]||p.o}</span></td>
         </tr>`).join('')}
       </tbody>
     </table>`:'<p style="font-size:12px;color:var(--t3)">No se encontraron publicaciones en la muestra cargada.</p>'}`;
@@ -1297,13 +1320,18 @@ function initTableSort(tblId,key,renderFn){
       var col=this.dataset.col;
       var type=this.dataset.type||'str';
       if(PSORT[key].col===col){
+        // Misma columna: toggle asc/desc
         PSORT[key].dir=PSORT[key].dir==='asc'?'desc':'asc';
       } else {
-        PSORT[key].col=col; PSORT[key].dir='desc';
+        // Nueva columna: primera vez siempre desc para números, asc para texto
+        PSORT[key].col=col;
+        var isStrCol={t:1,f:1,tp:1,o:1,l:1}[col]||
+          ((key==='ext'||key==='inv')&&!isNaN(parseInt(col))&&parseInt(col)<=2);
+        PSORT[key].dir=isStrCol?'asc':'desc';
       }
       tbl.querySelectorAll('thead th').forEach(h=>h.classList.remove('asc','desc'));
       this.classList.add(PSORT[key].dir);
-      if(key==='pubs'){PP=1}else if(key==='inv'){IP=1}
+      if(key==='pubs'){PP=1}else if(key==='inv'){IP=1}else if(key==='ext'){EP=1}
       renderFn();
     });
   });
@@ -1312,21 +1340,36 @@ function sortData(arr,key){
   var s=PSORT[key];
   if(!s)return;
   var col=s.col, dir=s.dir;
-  arr.sort((a,b)=>{
-    var va,vb;
-    if(col==='y'){va=a.y;vb=b.y}
-    else if(col==='c'){va=a.c;vb=b.c}
-    else return 0;
-    return dir==='asc'?va-vb:vb-va;
+  // Determinar tipo de datos
+  var strCols={t:1,f:1,tp:1,o:1,l:1};
+  var isStr=strCols[col];
+  arr.sort(function(a,b){
+    var va=a[col]||'', vb=b[col]||'';
+    if(isStr){
+      va=String(va).toLowerCase(); vb=String(vb).toLowerCase();
+      return dir==='asc'?va.localeCompare(vb):vb.localeCompare(va);
+    } else {
+      va=parseFloat(va)||0; vb=parseFloat(vb)||0;
+      return dir==='asc'?va-vb:vb-va;
+    }
   });
 }
 function sortDataArr(arr,key){
   var s=PSORT[key];
   if(!s)return;
-  var idx=parseInt(s.col), dir=s.dir;
-  arr.sort((a,b)=>{
-    var va=parseFloat(a[idx])||0, vb=parseFloat(b[idx])||0;
-    return dir==='asc'?va-vb:vb-va;
+  var col=s.col, dir=s.dir;
+  var idx=parseInt(col);
+  var strKeys={ext:{0:1,1:1,2:1},inv:{0:1,1:1}};
+  var isStr=strKeys[key]&&strKeys[key][col];
+  arr.sort(function(a,b){
+    var va=a[idx]||'', vb=b[idx]||'';
+    if(isStr){
+      va=String(va).toLowerCase(); vb=String(vb).toLowerCase();
+      return dir==='asc'?va.localeCompare(vb):vb.localeCompare(va);
+    } else {
+      va=parseFloat(va)||0; vb=parseFloat(vb)||0;
+      return dir==='asc'?va-vb:vb-va;
+    }
   });
 }
 function renderSortTable(tblId,tbodyId,data,rowFn,key,initSort){
@@ -1334,7 +1377,12 @@ function renderSortTable(tblId,tbodyId,data,rowFn,key,initSort){
     var s=PSORT[key];
     if(s){
       var idx=parseInt(s.col);
+      var isStrCol=({revs:{0:1},collab:{}}[key]||{})[String(s.col)];
       data.sort((a,b)=>{
+        if(isStrCol){
+          var sa=String(a[idx]||'').toLowerCase(),sb=String(b[idx]||'').toLowerCase();
+          return s.dir==='asc'?sa.localeCompare(sb):sb.localeCompare(sa);
+        }
         var va=parseFloat(a[idx])||0,vb=parseFloat(b[idx])||0;
         return s.dir==='asc'?va-vb:vb-va;
       });
@@ -1350,14 +1398,23 @@ function renderSortTable(tblId,tbodyId,data,rowFn,key,initSort){
         var col=this.dataset.col;
         var idx=parseInt(col);
         if(PSORT[key]&&PSORT[key].col===col){
+          // Misma columna: toggle
           PSORT[key].dir=PSORT[key].dir==='asc'?'desc':'asc';
         } else {
           if(!PSORT[key])PSORT[key]={};
-          PSORT[key].col=col;PSORT[key].dir='desc';
+          PSORT[key].col=col;
+          // Primera vez: asc para col 0 (texto), desc para números
+          PSORT[key].dir=(col==='0'&&(key==='revs'||key==='collab'))?'asc':'desc';
         }
         tbl.querySelectorAll('thead th').forEach(h=>h.classList.remove('asc','desc'));
         this.classList.add(PSORT[key].dir);
+        var rsStr=PSORT[key]&&{revs:{0:1},collab:{}};
+        var rsIsStr=rsStr&&rsStr[key]&&rsStr[key][col];
         data.sort((a,b)=>{
+          if(rsIsStr){
+            var sa=String(a[idx]||'').toLowerCase(),sb=String(b[idx]||'').toLowerCase();
+            return PSORT[key].dir==='asc'?sa.localeCompare(sb):sb.localeCompare(sa);
+          }
           var va=parseFloat(a[idx])||0,vb=parseFloat(b[idx])||0;
           return PSORT[key].dir==='asc'?va-vb:vb-va;
         });
